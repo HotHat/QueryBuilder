@@ -3,7 +3,7 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SqlBuilder\SelectBuilder;
+use SqlBuilder\SelectCompile;
 use SqlBuilder\Where;
 use SqlBuilder\Builder;
 

@@ -2,29 +2,34 @@
 
 namespace SqlBuilder;
 use SqlBuilder\scheme\Select as SelectClause;
+use SqlBuilder\scheme\Set;
+use SqlBuilder\scheme\Update;
 
 class Builder extends AbstractBuilder
 {
 
-    public function update()
+    public function update($data)
     {
-
-    }
-
-    public function select(...$column)
-    {
-        $select = new SelectClause();
-        foreach ($column as $it) {
-            $select->addItem($it);
+        $update = new Set();
+        foreach ($data as $k => $v) {
+            $update->addItem([$k, $v]);
         }
 
-        $this->container[] = $select;
+        $this->container[] = $update;
 
-        return new SelectBuilder($this->container, $this->bindValue, $this->stack, $this->isInStack);
+
+        $compile = new UpdateCompile($this->container);
+        $result = $compile->compile();
+
+        return $result;
+
     }
 
     public function get() {
+        $compile = new SelectCompile($this->container);
+        $result = $compile->compile();
+
+        return $result;
 
     }
-
 }

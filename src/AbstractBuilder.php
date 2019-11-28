@@ -27,7 +27,17 @@ abstract class AbstractBuilder
         $this->isInStack = $isInStack;
     }
 
+    public function select(...$column)
+    {
+        $select = new SelectClause();
+        foreach ($column as $it) {
+            $select->addItem($it);
+        }
 
+        $this->container[] = $select;
+
+        return $this;
+    }
 
     public function table(...$table) : AbstractBuilder {
         $from = new From();
