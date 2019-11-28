@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace ZiWen\SqlBuilder\scheme;
+namespace SqlBuilder\scheme;
 
 
 class Limit extends Column

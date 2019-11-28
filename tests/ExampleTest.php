@@ -3,9 +3,9 @@
 
 
 use PHPUnit\Framework\TestCase;
-use ZiWen\SqlBuilder\SelectStatement;
-use ZiWen\SqlBuilder\Where;
-use ZiWen\SqlBuilder\Builder;
+use SqlBuilder\SelectBuilder;
+use SqlBuilder\Where;
+use SqlBuilder\Builder;
 
 class ExampleTest extends  TestCase
 {
@@ -45,6 +45,35 @@ class ExampleTest extends  TestCase
 
         var_dump($sql);
     }
+
+    public function testCreateSelect() {
+        $builder = new Builder();
+        $sql = $builder
+            ->from('users')
+            ->where(function ($query) {
+                $query->where('id', '11')->where('name', 'name1')->orWhere('id', '=', 'name111');
+            })
+            ->where('id', '22')
+            ->orWhere(function ($query) {
+                $query->where('id=11')->where('name', 'name2')->orWhere('id', '=', 'name222');
+            })
+            ->select('id', 'name', 'created_at')
+            ->compile();
+
+        var_dump($sql);
+        $this->assertIsArray($sql);
+    }
+
+    public function testWithoutSelect() {
+        $builder = new Builder();
+        $sql = $builder
+            ->from('users')
+            ->compile();
+
+        var_dump($sql);
+        $this->assertIsArray($sql);
+    }
+
 
 
 }

@@ -1,35 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ZiWen\SqlBuilder;
-use ZiWen\SqlBuilder\scheme\Select as SelectClause;
+namespace SqlBuilder;
+use SqlBuilder\scheme\Select as SelectClause;
 
-class Builder
+class Builder extends AbstractBuilder
 {
 
 
-    private $container;
-
-    public function __construct()
-    {
-
-    }
-
-    public function select(...$column)
-    {
-        $select = new SelectClause();
-        foreach ($column as $it) {
-            $select->addItem($it);
-        }
-
-        $this->container[] = $select;
-
-        return new SelectStatement($this->container);
-    }
-
-    public function from(...$table)
-    {
-        return $this;
-    }
 
 
     public function orderBy()
@@ -46,15 +23,6 @@ class Builder
 
     }
 
-    public function where(...$params)
-    {
-
-    }
-
-    public function orWhere()
-    {
-
-    }
 
     public function groupBy()
     {

@@ -1,5 +1,5 @@
 {
-    "name": "ziwen/sql_builder",
+    "name": "hothat/sql-builder",
     "authors": [
         {
             "name": "lyh",
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ZiWen\\SqlBuilder\\": "src/"
+            "SqlBuilder\\": "src/"
         }
     },
     "autoload-dev": {

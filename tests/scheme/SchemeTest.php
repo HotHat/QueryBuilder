@@ -4,10 +4,10 @@
 
 
 use PHPUnit\Framework\TestCase;
-use ZiWen\SqlBuilder\scheme\Select;
-use ZiWen\SqlBuilder\scheme\Where;
-use ZiWen\SqlBuilder\scheme\OrWhere;
-use ZiWen\SqlBuilder\scheme\WhereItem;
+use SqlBuilder\scheme\Select;
+use SqlBuilder\scheme\Where;
+use SqlBuilder\scheme\OrWhere;
+use SqlBuilder\scheme\WhereItem;
 
 class SchemeTest extends TestCase
 {

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace ZiWen\SqlBuilder\scheme;
+namespace SqlBuilder\scheme;
 
 
 class WhereCondition implements Parse
@@ -39,7 +39,11 @@ class WhereCondition implements Parse
             [$sql, $value] = $it->compile();
 
             if (!empty($value)) {
-                $bindValue[] = $value;
+                if (is_array($value)) {
+                    $bindValue = array_merge($bindValue, $value);
+                } else {
+                    $bindValue[] = $value;
+                }
             }
 
             return sprintf('%s%s', $prefix, $sql);
