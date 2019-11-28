@@ -1,0 +1,24 @@
+{
+    "name": "ziwen/sql_builder",
+    "authors": [
+        {
+            "name": "lyh",
+            "email": "774964107@qq.com"
+        }
+    ],
+    "require": {
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZiWen\\SqlBuilder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        },
+        "files": [
+        ]
+    }
+}
