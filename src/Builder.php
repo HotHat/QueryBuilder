@@ -6,41 +6,24 @@ use SqlBuilder\scheme\Select as SelectClause;
 class Builder extends AbstractBuilder
 {
 
-
-
-
-    public function orderBy()
+    public function update()
     {
 
     }
 
-    public function having()
+    public function select(...$column)
     {
+        $select = new SelectClause();
+        foreach ($column as $it) {
+            $select->addItem($it);
+        }
 
+        $this->container[] = $select;
+
+        return new SelectBuilder($this->container, $this->bindValue, $this->stack, $this->isInStack);
     }
 
-    public function getSql() {
-
-    }
-
-
-    public function groupBy()
-    {
-
-    }
-
-    public function limit()
-    {
-
-    }
-
-    public function forUpdate()
-    {
-
-    }
-
-    public function lock()
-    {
+    public function get() {
 
     }
 

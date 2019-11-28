@@ -1,22 +1,47 @@
 <?php declare(strict_types=1);
 
-namespace ZiWen\SqlBuilder;
-use ZiWen\SqlBuilder\scheme\From;
-use ZiWen\SqlBuilder\scheme\OrWhereGroup;
-use ZiWen\SqlBuilder\scheme\Parse;
-use ZiWen\SqlBuilder\scheme\Where;
-use ZiWen\SqlBuilder\scheme\OrWhere;
-use ZiWen\SqlBuilder\scheme\WhereCondition;
-use ZiWen\SqlBuilder\scheme\WhereGroup;
+namespace SqlBuilder;
+use SqlBuilder\scheme\From;
+use SqlBuilder\scheme\OrWhereGroup;
+use SqlBuilder\scheme\Parse;
+use SqlBuilder\scheme\Set;
+use SqlBuilder\scheme\Where;
+use SqlBuilder\scheme\OrWhere;
+use SqlBuilder\scheme\WhereCondition;
+use SqlBuilder\scheme\WhereGroup;
+use SqlBuilder\scheme\Update;
 
 class UpdateBuilder extends AbstractBuilder implements Parse
 {
-
-
-    public function compile() :array
+    function table(...$table): AbstractBuilder
     {
-        $sql = trim(sprintf('%s %s %s %s',
-            $this->compileFrom(),
+        $from = new Update();
+        foreach ($table as $it) {
+            $from->addItem($it);
+        }
+
+        $this->container[] = $from;
+
+        return $this;
+    }
+
+    public function update($data) {
+        $update = new Set();
+
+        foreach ($data as $k => $v) {
+            $update->addItem([$k, $v]);
+        }
+
+        $this->container[] = $update;
+        return $this;
+    }
+
+
+    public function compile(): array
+    {
+        $sql = trim(sprintf('%s %s %s %s %s',
+            $this->compileUpdate(),
+            $this->compileSet(),
             $this->compileWhere(),
             $this->compileOrderBy(),
             $this->compileLimit(),
@@ -25,61 +50,39 @@ class UpdateBuilder extends AbstractBuilder implements Parse
     }
 
 
-    private function compileFrom()
+    private function compileUpdate()
     {
         foreach ($this->container as $it) {
-            if ($it instanceof \ZiWen\SqlBuilder\scheme\From) {
+            if ($it instanceof \SqlBuilder\scheme\Update) {
                 return $it->compile();
             }
         }
 
-        throw new \BuilderException('Not find from statement');
-    }
-
-    private function compileWhere()
-    {
-        $condition = new WhereCondition();
-        foreach ($this->container as $it) {
-            if ($it instanceof \ZiWen\SqlBuilder\scheme\Conjunct) {
-                $condition->addWhere($it);
-            }
-        }
-
-        [$sql, $value] = $condition->compile();
-
-        $this->bindValue = array_merge($this->bindValue, $value);
-
-        return sprintf('WHERE %s', $sql);
+        throw new BuilderException('Without UPDATE statement');
 
     }
 
-    private function compileGroupBy()
-    {
-
-    }
 
     private function compileOrderBy()
     {
 
     }
 
-    private function compileHaving()
-    {
-
-    }
 
     private function compileLimit()
     {
 
     }
 
-    private function compileForUpdate()
+    private function compileSet()
     {
+        foreach ($this->container as $it) {
+            if ($it instanceof \SqlBuilder\scheme\Set) {
+                return $it->compile();
+            }
+        }
 
-    }
-
-    private function compileLock()
-    {
+        throw new BuilderException('Without SET statement');
 
     }
 }

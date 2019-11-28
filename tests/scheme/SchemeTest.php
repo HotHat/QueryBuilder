@@ -186,4 +186,23 @@ class SchemeTest extends TestCase
         $this->assertEquals($expect, $g->compile());
     }
 
+    public function testUpdate() {
+        $u = new \SqlBuilder\scheme\Update();
+        $u->addItem('users');
+
+        $sql = $u->compile();
+
+        var_dump($sql);
+    }
+
+    public function testSet() {
+        $u = new \SqlBuilder\scheme\Set();
+        $u->addItem(['name', 'name']);
+        $u->addItem(['id', 1]);
+
+        $sql = $u->compile();
+
+        var_dump($sql);
+    }
+
 }

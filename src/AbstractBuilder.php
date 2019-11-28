@@ -27,17 +27,7 @@ abstract class AbstractBuilder
         $this->isInStack = $isInStack;
     }
 
-    public function select(...$column)
-    {
-        $select = new SelectClause();
-        foreach ($column as $it) {
-            $select->addItem($it);
-        }
 
-        $this->container[] = $select;
-
-        return new SelectBuilder($this->container, $this->bindValue, $this->stack, $this->isInStack);
-    }
 
     public function table(...$table) : AbstractBuilder {
         $from = new From();
@@ -47,23 +37,24 @@ abstract class AbstractBuilder
 
         $this->container[] = $from;
 
-        return new SelectBuilder($this->container, $this->bindValue, $this->stack, $this->isInStack);
+        return $this;
     }
 
     public function from(...$table) : AbstractBuilder {
         return $this->table(...$table);
     }
 
-
-    public function orderBy()
+    protected function compileFrom()
     {
+        foreach ($this->container as $it) {
+            if ($it instanceof \SqlBuilder\scheme\From) {
+                return $it->compile();
+            }
+        }
 
+        throw new BuilderException('Not find from statement');
     }
 
-    public function having()
-    {
-
-    }
 
     public function where(...$where) : AbstractBuilder
     {
@@ -132,22 +123,21 @@ abstract class AbstractBuilder
         return $this;
     }
 
-    public function groupBy()
+
+    protected function compileWhere()
     {
+        $condition = new WhereCondition();
+        foreach ($this->container as $it) {
+            if ($it instanceof \SqlBuilder\scheme\Conjunct) {
+                $condition->addWhere($it);
+            }
+        }
 
-    }
+        [$sql, $value] = $condition->compile();
 
-    public function limit() {
+        $this->bindValue = array_merge($this->bindValue, $value);
 
-    }
-
-    public function forUpdate()
-    {
-
-    }
-
-    public function lock()
-    {
+        return empty($sql) ? '' : sprintf('WHERE %s', $sql);
 
     }
 

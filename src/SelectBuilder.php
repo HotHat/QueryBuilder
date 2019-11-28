@@ -4,6 +4,7 @@ namespace SqlBuilder;
 use SqlBuilder\scheme\From;
 use SqlBuilder\scheme\OrWhereGroup;
 use SqlBuilder\scheme\Parse;
+use SqlBuilder\scheme\Select as SelectClause;
 use SqlBuilder\scheme\Where;
 use SqlBuilder\scheme\OrWhere;
 use SqlBuilder\scheme\WhereCondition;
@@ -11,6 +12,17 @@ use SqlBuilder\scheme\WhereGroup;
 
 class SelectBuilder extends AbstractBuilder implements Parse
 {
+    public function select(...$column)
+    {
+        $select = new SelectClause();
+        foreach ($column as $it) {
+            $select->addItem($it);
+        }
+
+        $this->container[] = $select;
+
+        return $this;
+    }
 
 
     public function compile() :array
@@ -41,33 +53,8 @@ class SelectBuilder extends AbstractBuilder implements Parse
         return 'SELECT *';
     }
 
-    private function compileFrom()
-    {
-        foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\From) {
-                return $it->compile();
-            }
-        }
 
-        throw new BuilderException('Not find from statement');
-    }
 
-    private function compileWhere()
-    {
-        $condition = new WhereCondition();
-        foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\Conjunct) {
-                $condition->addWhere($it);
-            }
-        }
-
-        [$sql, $value] = $condition->compile();
-
-        $this->bindValue = array_merge($this->bindValue, $value);
-
-        return empty($sql) ? '' : sprintf('WHERE %s', $sql);
-
-    }
 
     private function compileGroupBy()
     {
