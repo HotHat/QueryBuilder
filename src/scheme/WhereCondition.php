@@ -27,7 +27,7 @@ class WhereCondition implements Parse
 
         $bindValue = [];
 
-        $list = array_map(function (WhereItem $it) use (&$first, &$bindValue) {
+        $list = array_map(function (Conjunct $it) use (&$first, &$bindValue) {
 
             if ($first) {
                 $prefix = '';

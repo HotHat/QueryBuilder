@@ -11,7 +11,7 @@ class Builder
 
     public function __construct()
     {
-        parent::__construct();
+
     }
 
     public function select(...$column)
@@ -23,7 +23,7 @@ class Builder
 
         $this->container[] = $select;
 
-        return new Select($this->container);
+        return new SelectStatement($this->container);
     }
 
     public function from(...$table)
