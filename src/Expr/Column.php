@@ -27,7 +27,7 @@ class Column implements Parse
 
     public function compile() : string {
         $column = array_map(function ($it) {
-            $s = explode('.', $it);
+            $s = explode('.', (string)$it);
 
             $e = array_map(function ($it) {
                 return sprintf('%s%s%s', $this->escapeCode(), $it, $this->escapeCode());

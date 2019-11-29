@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SqlBuilder;
+namespace SqlBuilder\Expr;
 use SqlBuilder\Expr\From;
 use SqlBuilder\Expr\OrWhereGroup;
 use SqlBuilder\Expr\Parse;
@@ -11,7 +11,7 @@ use SqlBuilder\Expr\WhereCondition;
 use SqlBuilder\Expr\WhereGroup;
 use SqlBuilder\Expr\Update;
 
-class UpdateCompile extends BuilderCompile
+class UpdateCompile extends QueryCompile
 {
     public function compile(): array
     {

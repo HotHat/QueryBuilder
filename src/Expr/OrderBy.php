@@ -3,6 +3,7 @@
 
 namespace SqlBuilder\Expr;
 
+use function SqlBuilder\Expr\prefixSpace;
 
 class OrderBy extends Column
 {
@@ -10,21 +11,16 @@ class OrderBy extends Column
 
     public function compile(): string
     {
-        $escapeKeep = $this->escape;
-        $this->contain = array_map(function ($it)  {
+        if(empty($this->contain)) {
+            return '';
+        }
 
-            if (is_array($it)) {
-                return sprintf('%s%s%s %s', $this->escapeCode(), $it[0], $this->escapeCode(), $it[1]);
-            } else {
-                return sprintf('%s', $it);
-            }
+        $lst = array_map(function (orderByItem $it) {
+            return sprintf('%s%s%s%s', $this->escapeCode(), $it->column, $this->escapeCode(),
+                empty($it->direction) ? '' : prefixSpace($it->direction));
 
         }, $this->contain);
-        $this->escape = false;
 
-        $sql = parent::compile();
-        $this->escape = $escapeKeep;
-
-        return $sql;
+        return sprintf('%s %s', $this->tag, implode(', ', $lst));
     }
 }

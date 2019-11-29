@@ -3,11 +3,8 @@
 
 namespace SqlBuilder\Expr;
 
-
-class GroupBy extends Column
+use Exception;
+class ExprException extends Exception
 {
-    protected $tag = 'GROUP BY';
-
-
 
 }

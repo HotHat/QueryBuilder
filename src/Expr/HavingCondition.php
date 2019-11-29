@@ -4,10 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class GroupBy extends Column
+class HavingCondition extends WhereCondition
 {
-    protected $tag = 'GROUP BY';
-
-
 
 }

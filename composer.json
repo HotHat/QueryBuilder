@@ -12,13 +12,17 @@
     "autoload": {
         "psr-4": {
             "SqlBuilder\\": "src/"
-        }
+        },
+        "files": [
+            "src/Expr/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
         },
         "files": [
+            "src/Expr/functions.php"
         ]
     }
 }

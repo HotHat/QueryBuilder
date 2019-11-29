@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class Having extends WhereCondition
+class Having extends Where
 {
 
 }
