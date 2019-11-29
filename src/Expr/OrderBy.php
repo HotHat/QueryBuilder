@@ -11,7 +11,7 @@ class OrderBy extends Column
 
     public function compile(): string
     {
-        if(empty($this->contain)) {
+        if(empty($this->container)) {
             return '';
         }
 
@@ -19,7 +19,7 @@ class OrderBy extends Column
             return sprintf('%s%s%s%s', $this->escapeCode(), $it->column, $this->escapeCode(),
                 empty($it->direction) ? '' : prefixSpace($it->direction));
 
-        }, $this->contain);
+        }, $this->container);
 
         return sprintf('%s %s', $this->tag, implode(', ', $lst));
     }

@@ -7,3 +7,6 @@ function prefixSpace($str) {
     return sprintf(' %s', $str);
 }
 
+function wrapValue($value) {
+    return sprintf('`%s`', $$value);
+}

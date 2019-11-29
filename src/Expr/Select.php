@@ -11,7 +11,7 @@ class Select extends Column
 
     public function compile() : string
     {
-        if (empty($this->contain)) {
+        if (empty($this->container)) {
             return 'SELECT *';
         }
 

@@ -153,7 +153,7 @@ class SchemeTest extends TestCase
 
 
     public function testLimit() {
-        $l = new \ZiWen\SqlBuilder\scheme\Limit();
+        $l = new \SqlBuilder\Expr\Limit();
         $l->addItem('1');
         $expect = 'LIMIT 1';
         $this->assertEquals($expect, $l->compile());

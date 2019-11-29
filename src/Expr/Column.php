@@ -6,18 +6,18 @@ namespace SqlBuilder\Expr;
 
 class Column implements Parse
 {
-    protected $contain;
+    protected $container;
     protected $tag;
     protected $escape = true;
 
 
     public function __construct()
     {
-        $this->contain = [];
+        $this->container = [];
     }
 
     public function addItem($it) {
-        array_push($this->contain, $it);
+        array_push($this->container, $it);
     }
 
     public function escapeCode() : string
@@ -25,19 +25,34 @@ class Column implements Parse
        return $this->escape ? '`' : '';
     }
 
+    public function isEmpty() {
+       return empty($this->container);
+    }
+
+    public function emptyHandle($func) {
+        if ($this->isEmpty()){
+            return '';
+        }
+
+        return $func();
+    }
+
     public function compile() : string {
-        $column = array_map(function ($it) {
-            $s = explode('.', (string)$it);
+        return $this->emptyHandle(function() {
+            $column = array_map(function ($it) {
+                $s = explode('.', (string)$it);
 
-            $e = array_map(function ($it) {
-                return sprintf('%s%s%s', $this->escapeCode(), $it, $this->escapeCode());
-            }, $s);
+                $e = array_map(function ($it) {
+                    return sprintf('%s%s%s', $this->escapeCode(), $it, $this->escapeCode());
+                }, $s);
 
-            return implode('.', $e);
+                return implode('.', $e);
 
-        }, $this->contain);
+            }, $this->container);
 
-        return sprintf('%s %s', $this->tag, implode(', ', $column));
+            return sprintf(' %s %s', $this->tag, implode(', ', $column));
+        });
+
     }
 
 }

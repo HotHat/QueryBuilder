@@ -8,7 +8,9 @@ class ForUpdate extends Column
 {
     public function compile(): string
     {
-        return 'FOR UPDATE';
+        return $this->emptyHandle(function() {
+            return 'FOR UPDATE';
+        });
     }
 
 }

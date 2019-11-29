@@ -1,55 +1,81 @@
 <?php declare(strict_types=1);
 
+
 namespace SqlBuilder;
+
+
 use SqlBuilder\Expr\ForShare;
 use SqlBuilder\Expr\ForUpdate;
 use SqlBuilder\Expr\From;
+use SqlBuilder\Expr\GroupBy;
 use SqlBuilder\Expr\Having;
 use SqlBuilder\Expr\Limit;
+use SqlBuilder\Expr\OrderBy;
 use SqlBuilder\Expr\OrderByItem;
 use SqlBuilder\Expr\OrWhere;
 use SqlBuilder\Expr\OrWhereGroup;
+use SqlBuilder\Expr\Select;
 use SqlBuilder\Expr\Select as SelectClause;
 use SqlBuilder\Expr\SelectCompile;
+use SqlBuilder\Expr\SelectExpr;
 use SqlBuilder\Expr\Set;
+use SqlBuilder\Expr\Table;
 use SqlBuilder\Expr\UpdateCompile;
+use SqlBuilder\Expr\UpdateExpr;
 use SqlBuilder\Expr\Where;
+use SqlBuilder\Expr\WhereCondition;
 use SqlBuilder\Expr\WhereGroup;
 
 class Builder
 {
-    protected $container;
-    protected $bindValue;
+    protected $container = [
+        'table',
+        'from',
+        'where',
+        'values',
+        'select',
+        'groupBy',
+        'having',
+        'orderBy',
+        'limit',
+        'forUpdate',
+        'updateSet',
+    ];
     protected $stack;
     protected $isInStack;
 
-    public function __construct($container = [], $bindValue = [], $stack = [], $isInStack = false)
+    public function __construct()
     {
-        $this->container = $container;
-        $this->bindValue = $bindValue;
-        $this->stack = $stack;
-        $this->isInStack = $isInStack;
+        $this->container = [
+            'table' => new Table(),
+            'from' => new From(),
+            'where' => new WhereCondition(),
+            'values' => [],
+            'select' => new Select(),
+            'groupBy' => new GroupBy(),
+            'having' => new Having(),
+            'orderBy' => new OrderBy(),
+            'limit' => new Limit(),
+            'forUpdate' => new ForUpdate(),
+            'updateSet' => new Set(),
+        ];
+        $this->stack = [];
+        $this->isInStack = false;
     }
 
     public function select(...$column)
     {
-        $select = new SelectClause();
         foreach ($column as $it) {
-            $select->addItem($it);
+            $this->container['select']->addItem($it);
         }
-
-        $this->container[] = $select;
 
         return $this;
     }
 
     public function table(...$table) {
-        $from = new From();
         foreach ($table as $it) {
-            $from->addItem($it);
+            $this->container['table']->addItem($it);
         }
-
-        $this->container[] = $from;
 
         return $this;
     }
@@ -74,7 +100,7 @@ class Builder
             $this->stack = [];
             $this->isInStack = false;
 
-            $this->container[] = $whereGroup;
+            $this->container['where']->addWhere($whereGroup);
 
             return $this;
         }
@@ -85,7 +111,7 @@ class Builder
             $this->stack[] = $where;
 
         } else {
-            $this->container[] = $where;
+            $this->container['where']->addWhere($where);
         }
 
         return $this;
@@ -108,7 +134,7 @@ class Builder
             $this->stack = [];
             $this->isInStack = false;
 
-            $this->container[] = $whereGroup;
+            $this->container['where']->addWhere($whereGroup);
 
             return $this;
         }
@@ -119,7 +145,7 @@ class Builder
             $this->stack[] = $where;
 
         } else {
-            $this->container[] = $where;
+            $this->container['where']->addWhere($where);
         }
 
         return $this;
@@ -130,9 +156,8 @@ class Builder
 
         if ($this->isInStack) {
             $this->stack[] = $where;
-
         } else {
-            $this->container[] = $where;
+            $this->container['having']->addWhere($where);
         }
 
         return $this;
@@ -140,67 +165,66 @@ class Builder
 
     public function update($data)
     {
-        $update = new Set();
         foreach ($data as $k => $v) {
-            $update->addItem([$k, $v]);
+            $this->container['updateSet']->addItem([$k, $v]);
         }
 
-        $this->container[] = $update;
+        $expr = new UpdateExpr($this->container['table'],
+        $this->container['updateSet'],
+            $this->container['where'],
+            $this->container['orderBy'],
+            $this->container['limit'],
+        );
 
-
-        $compile = new UpdateCompile($this->container);
-        $result = $compile->compile();
-
-        $this->reset();
-
-        return $result;
+        return $expr->compile();
 
     }
 
     public function get() {
-        $compile = new SelectCompile($this->container);
-        $result = $compile->compile();
 
-        $this->reset();
+        $expr = new SelectExpr(
+            $this->container['select'],
+            $this->container['table']->toFrom(),
+            $this->container['where'],
+            $this->container['groupBy'],
+            $this->container['having'],
+            $this->container['orderBy'],
+            $this->container['limit'],
+            $this->container['forUpdate']
+        );
+
+        $result = $expr->compile();
+
         return $result;
 
     }
 
     public function limit($offset, $row = '') {
-        $limit = new Limit();
-        $limit->addItem($offset);
+        $this->container['limit']->addItem($offset);
 
         if (!empty($row)) {
-            $limit->addItem($row);
+            $this->container['limit']->addItem($row);
         }
-
-        $this->container[] = $limit;
 
         return $this;
     }
 
     public function forUpdate() {
-        $this->container[] = new ForUpdate();
+        $this->container['forUpdate'] = new ForUpdate();
         return $this;
     }
 
     public function forShare() {
-        $this->container[] = new ForShare();
+        $this->container['forUpdate'] = new ForShare();
         return $this;
     }
 
     public function orderBy($name, $direction = '') {
         $orderBy = new OrderByItem($name, $direction);
 
-        $this->container[] = $orderBy;
+        $this->container['orderBy']->addItem($orderBy);
 
         return $this;
     }
 
-    private function reset() {
-        $this->container = [];
-        $this->bindValue = [];
-        $this->stack = [];
-        $this->isInStack = false;
-    }
 }

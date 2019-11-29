@@ -10,9 +10,9 @@ class Set extends Column
 
     public function compile(): string
     {
-        $this->contain = array_map(function ($it) {
+        $this->container = array_map(function ($it) {
             return sprintf("%s%s%s='%s'", $this->escapeCode(), $it[0], $this->escapeCode(), $it[1]);
-        }, $this->contain);
+        }, $this->container);
 
         $this->escape = false;
 
