@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
 namespace SqlBuilder;
-use SqlBuilder\scheme\From;
-use SqlBuilder\scheme\OrWhereGroup;
-use SqlBuilder\scheme\Parse;
-use SqlBuilder\scheme\Select as SelectClause;
-use SqlBuilder\scheme\Where;
-use SqlBuilder\scheme\OrWhere;
-use SqlBuilder\scheme\WhereCondition;
-use SqlBuilder\scheme\WhereGroup;
+use SqlBuilder\Expr\From;
+use SqlBuilder\Expr\OrWhereGroup;
+use SqlBuilder\Expr\Parse;
+use SqlBuilder\Expr\Select as SelectClause;
+use SqlBuilder\Expr\Where;
+use SqlBuilder\Expr\OrWhere;
+use SqlBuilder\Expr\WhereCondition;
+use SqlBuilder\Expr\WhereGroup;
 
 class SelectCompile extends BuilderCompile
 {

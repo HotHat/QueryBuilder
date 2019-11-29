@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
 namespace SqlBuilder;
-use SqlBuilder\scheme\From;
-use SqlBuilder\scheme\OrWhereGroup;
-use SqlBuilder\scheme\Parse;
-use SqlBuilder\scheme\Set;
-use SqlBuilder\scheme\Where;
-use SqlBuilder\scheme\OrWhere;
-use SqlBuilder\scheme\WhereCondition;
-use SqlBuilder\scheme\WhereGroup;
-use SqlBuilder\scheme\Update;
+use SqlBuilder\Expr\From;
+use SqlBuilder\Expr\OrWhereGroup;
+use SqlBuilder\Expr\Parse;
+use SqlBuilder\Expr\Set;
+use SqlBuilder\Expr\Where;
+use SqlBuilder\Expr\OrWhere;
+use SqlBuilder\Expr\WhereCondition;
+use SqlBuilder\Expr\WhereGroup;
+use SqlBuilder\Expr\Update;
 
 class UpdateCompile extends BuilderCompile
 {

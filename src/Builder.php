@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
 namespace SqlBuilder;
-use SqlBuilder\scheme\Select as SelectClause;
-use SqlBuilder\scheme\Set;
-use SqlBuilder\scheme\Update;
+use SqlBuilder\Expr\Select as SelectClause;
+use SqlBuilder\Expr\Set;
+use SqlBuilder\Expr\Update;
 
 class Builder extends AbstractBuilder
 {

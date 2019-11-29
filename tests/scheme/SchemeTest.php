@@ -4,10 +4,10 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SqlBuilder\scheme\Select;
-use SqlBuilder\scheme\Where;
-use SqlBuilder\scheme\OrWhere;
-use SqlBuilder\scheme\WhereItem;
+use SqlBuilder\Expr\Select;
+use SqlBuilder\Expr\Where;
+use SqlBuilder\Expr\OrWhere;
+use SqlBuilder\Expr\WhereItem;
 
 class SchemeTest extends TestCase
 {
@@ -187,7 +187,7 @@ class SchemeTest extends TestCase
     }
 
     public function testUpdate() {
-        $u = new \SqlBuilder\scheme\Update();
+        $u = new \SqlBuilder\Expr\Update();
         $u->addItem('users');
 
         $sql = $u->compile();
@@ -196,7 +196,7 @@ class SchemeTest extends TestCase
     }
 
     public function testSet() {
-        $u = new \SqlBuilder\scheme\Set();
+        $u = new \SqlBuilder\Expr\Set();
         $u->addItem(['name', 'name']);
         $u->addItem(['id', 1]);
 

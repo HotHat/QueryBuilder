@@ -4,8 +4,8 @@
 namespace SqlBuilder;
 
 
-use SqlBuilder\scheme\Parse;
-use SqlBuilder\scheme\WhereCondition;
+use SqlBuilder\Expr\Parse;
+use SqlBuilder\Expr\WhereCondition;
 
 abstract class BuilderCompile implements Parse
 {
@@ -24,7 +24,7 @@ abstract class BuilderCompile implements Parse
     {
 
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\Select) {
+            if ($it instanceof \SqlBuilder\Expr\Select) {
                 return $it->compile();
             }
         }
@@ -36,7 +36,7 @@ abstract class BuilderCompile implements Parse
     {
         $condition = new WhereCondition();
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\Conjunct) {
+            if ($it instanceof \SqlBuilder\Expr\Conjunct) {
                 $condition->addWhere($it);
             }
         }
@@ -53,7 +53,7 @@ abstract class BuilderCompile implements Parse
     protected function compileUpdate()
     {
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\From) {
+            if ($it instanceof \SqlBuilder\Expr\From) {
                 $sql =  $it->compile();
 
                 return preg_replace('/^FROM/i', 'UPDATE', $sql);
@@ -68,7 +68,7 @@ abstract class BuilderCompile implements Parse
     protected function compileFrom()
     {
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\From) {
+            if ($it instanceof \SqlBuilder\Expr\From) {
                 return $it->compile();
             }
         }
@@ -79,7 +79,7 @@ abstract class BuilderCompile implements Parse
     protected function compileSet()
     {
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\Set) {
+            if ($it instanceof \SqlBuilder\Expr\Set) {
                 return $it->compile();
             }
         }

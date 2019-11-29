@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\scheme;
+namespace SqlBuilder\Expr;
 
 
 class OrWhereGroup extends WhereGroup

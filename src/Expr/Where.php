@@ -1,15 +1,14 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\scheme;
+namespace SqlBuilder\Expr;
 
 
-class OrWhere extends WhereItem
+class Where extends WhereItem
 {
-
 
     public function isAnd(): bool
     {
-        return false;
+        return true;
     }
 }

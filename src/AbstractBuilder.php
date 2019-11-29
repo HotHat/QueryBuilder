@@ -4,13 +4,13 @@
 namespace SqlBuilder;
 
 
-use SqlBuilder\scheme\From;
-use SqlBuilder\scheme\OrWhere;
-use SqlBuilder\scheme\OrWhereGroup;
-use SqlBuilder\scheme\Select as SelectClause;
-use SqlBuilder\scheme\Where;
-use SqlBuilder\scheme\WhereCondition;
-use SqlBuilder\scheme\WhereGroup;
+use SqlBuilder\Expr\From;
+use SqlBuilder\Expr\OrWhere;
+use SqlBuilder\Expr\OrWhereGroup;
+use SqlBuilder\Expr\Select as SelectClause;
+use SqlBuilder\Expr\Where;
+use SqlBuilder\Expr\WhereCondition;
+use SqlBuilder\Expr\WhereGroup;
 
 abstract class AbstractBuilder
 {
@@ -57,7 +57,7 @@ abstract class AbstractBuilder
     protected function compileFrom()
     {
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\From) {
+            if ($it instanceof \SqlBuilder\Expr\From) {
                 return $it->compile();
             }
         }
@@ -138,7 +138,7 @@ abstract class AbstractBuilder
     {
         $condition = new WhereCondition();
         foreach ($this->container as $it) {
-            if ($it instanceof \SqlBuilder\scheme\Conjunct) {
+            if ($it instanceof \SqlBuilder\Expr\Conjunct) {
                 $condition->addWhere($it);
             }
         }
