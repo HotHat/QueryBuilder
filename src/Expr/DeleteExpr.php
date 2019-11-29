@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class DeleteExpr
+class DeleteExpr implements Parse
 {
     private $table;
     private $from;
@@ -15,6 +15,10 @@ class DeleteExpr
         $this->table = $table;
         $this->from = $from;
         $this->where = $where;
+    }
+
+    public function compile() {
+
     }
 
 }

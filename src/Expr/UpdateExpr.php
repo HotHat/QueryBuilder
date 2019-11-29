@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class UpdateExpr
+class UpdateExpr implements Parse
 {
     private $table;
     private $set;
@@ -19,6 +19,18 @@ class UpdateExpr
         $this->where = $where;
         $this->orderBy = $orderBy;
         $this->limit = $limit;
+    }
+
+    public function compile(): array
+    {
+        $sql = trim(sprintf('%s%s%s%s%s',
+            $this->compileUpdate(),
+            $this->compileSet(),
+            $this->compileWhere(),
+            $this->compileOrderBy(),
+            $this->compileLimit(),
+        ));
+        return [$sql, $this->bindValue];
     }
 
 }

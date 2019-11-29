@@ -9,6 +9,7 @@ use SqlBuilder\Expr\ForUpdate;
 use SqlBuilder\Expr\From;
 use SqlBuilder\Expr\GroupBy;
 use SqlBuilder\Expr\Having;
+use SqlBuilder\Expr\HavingCondition;
 use SqlBuilder\Expr\Limit;
 use SqlBuilder\Expr\OrderBy;
 use SqlBuilder\Expr\OrderByItem;
@@ -53,7 +54,7 @@ class Builder
             'values' => [], // TODO: Not implement yet
             'select' => new Select(),
             'groupBy' => new GroupBy(),
-            'having' => new Having(),
+            'having' => new HavingCondition(),
             'orderBy' => new OrderBy(),
             'limit' => new Limit(),
             'forUpdate' => new ForUpdate(),

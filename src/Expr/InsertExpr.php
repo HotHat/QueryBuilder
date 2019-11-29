@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class InsertExpr
+class InsertExpr implements Parse
 {
     private $table;
     private $values;
@@ -13,5 +13,9 @@ class InsertExpr
     {
         $this->table = $table;
         $this->values = $values;
+    }
+
+    public function compile() {
+
     }
 }
