@@ -50,7 +50,7 @@ class Builder
             'table' => new Table(),
             'from' => new From(),
             'where' => new WhereCondition(),
-            'values' => [],
+            'values' => [], // TODO: Not implement yet
             'select' => new Select(),
             'groupBy' => new GroupBy(),
             'having' => new Having(),
