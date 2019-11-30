@@ -78,6 +78,15 @@ class BuilderTest extends TestCase
 
         var_dump($sql);
     }
+    
+    
+    public function testTableJoin() {
+        $builder = new \SqlBuilder\Builder();
+        $sql = $builder->table('users')->select('id', 'name')
+            ->join('orders', 'users.id', '=', 'orders.user_id')->get();
+        
+        var_dump($sql);
+    }
 
 
 }

@@ -10,11 +10,14 @@ use SqlBuilder\Expr\From;
 use SqlBuilder\Expr\GroupBy;
 use SqlBuilder\Expr\Having;
 use SqlBuilder\Expr\HavingCondition;
+use SqlBuilder\Expr\Join;
+use SqlBuilder\Expr\LeftJoin;
 use SqlBuilder\Expr\Limit;
 use SqlBuilder\Expr\OrderBy;
 use SqlBuilder\Expr\OrderByItem;
 use SqlBuilder\Expr\OrWhere;
 use SqlBuilder\Expr\OrWhereGroup;
+use SqlBuilder\Expr\RightJoin;
 use SqlBuilder\Expr\Select;
 use SqlBuilder\Expr\Select as SelectClause;
 use SqlBuilder\Expr\SelectCompile;
@@ -49,7 +52,6 @@ class Builder
     {
         $this->container = [
             'table' => new Table(),
-            'from' => new From(),
             'where' => new WhereCondition(),
             'values' => [], // TODO: Not implement yet
             'select' => new Select(),
@@ -180,12 +182,28 @@ class Builder
         return $expr->compile();
 
     }
-
+    
+    public function join($table, $leftCol, $condition, $rightCol) {
+        $this->container['table']->addJoin(new Join($table, $leftCol, $condition, $rightCol));
+        return $this;
+    }
+    
+    public function leftJoin($table, $leftCol, $condition, $rightCol) {
+        $this->container['table']->addJoin(new LeftJoin($table, $leftCol, $condition, $rightCol));
+        return $this;
+    }
+    
+    public function rightJoin($table, $leftCol, $condition, $rightCol) {
+        $this->container['table']->addJoin(new RightJoin($table, $leftCol, $condition, $rightCol));
+        return $this;
+    }
+    
+    
     public function get() {
 
         $expr = new SelectExpr(
             $this->container['select'],
-            $this->container['table']->toFrom(),
+            $this->container['table']->asFrom(),
             $this->container['where'],
             $this->container['groupBy'],
             $this->container['having'],

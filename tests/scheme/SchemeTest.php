@@ -204,5 +204,54 @@ class SchemeTest extends TestCase
 
         var_dump($sql);
     }
-
+    
+    
+    public function testJoin() {
+        $join = new \SqlBuilder\Expr\Join('orders', 'user.id',  '=', 'orders.user_id');
+        
+        echo $join->compile();
+        
+        $expect = 'JOIN `orders` ON `user`.`id`=`orders`.`user_id`';
+        $this->assertEquals($expect, $join->compile());
+    }
+    
+    public function testLeftJoin() {
+        $join = new \SqlBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
+    
+        echo $join->compile();
+    
+        $expect = 'LEFT JOIN `orders` ON `user`.`id`=`orders`.`user_id`';
+        $this->assertEquals($expect, $join->compile());
+    }
+    
+    public function testRightJion() {
+        $join = new \SqlBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
+    
+        echo $join->compile();
+    
+        $expect = 'RIGHT JOIN `orders` ON `user`.`id`=`orders`.`user_id`';
+        $this->assertEquals($expect, $join->compile());
+    }
+    
+    
+    public function testTaleWithJoin() {
+    
+        $join = new \SqlBuilder\Expr\Join('orders', 'user.id', '=', 'orders.user_id');
+        $leftJoin = new \SqlBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
+        $rightJoin = new \SqlBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
+        
+        
+        $table = (new \SqlBuilder\Expr\Table())->asFrom();
+        $table->addTable('users');
+        
+        $table->addJoin($join);
+        $table->addJoin($leftJoin);
+        $table->addJoin($rightJoin);
+        
+        
+        $sql = $table->compile();
+        
+        echo $sql;
+        
+    }
 }

@@ -36,14 +36,7 @@ class Column implements Parse
     public function compile() : string {
         return $this->emptyHandle(function() {
             $column = array_map(function ($it) {
-                $s = explode('.', (string)$it);
-
-                $e = array_map(function ($it) {
-                    return sprintf('%s%s%s', $this->escapeCode(), $it, $this->escapeCode());
-                }, $s);
-
-                return implode('.', $e);
-
+                return wrapValue($it);
             }, $this->container);
 
             return sprintf(' %s %s', $this->tag, implode(', ', $column));

@@ -8,7 +8,11 @@ function prefixSpace($str) {
 }
 
 function wrapValue($value) {
-    return sprintf('`%s`', $$value);
+    $s = explode('.', (string)$value);
+    $l = array_map(function ($it) {
+        return sprintf('`%s`', $it);
+    }, $s);
+    return implode('.', $l);
 }
 
 function compileWithDefault($test, $func, $default = '') {
