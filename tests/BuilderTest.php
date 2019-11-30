@@ -62,7 +62,15 @@ class BuilderTest extends TestCase
 
         var_dump($sql);
     }
-
+    
+    public function testWhere() {
+        $builder = new \SqlBuilder\Builder();
+        $sql = $builder->table('users')->select('id', 'name')
+            ->where('id', 1)->get();
+        
+        var_dump($sql);
+    }
+    
     public function testHaving() {
         $builder = new \SqlBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')

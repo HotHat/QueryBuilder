@@ -17,7 +17,7 @@ class SelectExpr
 
     public function __construct(
         Select $select, From $from, WhereCondition $where,
-        GroupBy $groupBy, Having $having, OrderBy $orderBy,
+        GroupBy $groupBy, HavingCondition $having, OrderBy $orderBy,
         Limit $limit, ForUpdate $forUpdate)
     {
 

@@ -10,3 +10,11 @@ function prefixSpace($str) {
 function wrapValue($value) {
     return sprintf('`%s`', $$value);
 }
+
+function compileWithDefault($test, $func, $default = '') {
+    if ($test){
+        return $default;
+    }
+    
+    return $func();
+}

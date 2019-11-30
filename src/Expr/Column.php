@@ -30,11 +30,7 @@ class Column implements Parse
     }
 
     public function emptyHandle($func) {
-        if ($this->isEmpty()){
-            return '';
-        }
-
-        return $func();
+        return compileWithDefault($this->isEmpty(), $func, '');
     }
 
     public function compile() : string {

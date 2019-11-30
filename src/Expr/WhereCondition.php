@@ -6,7 +6,8 @@ namespace SqlBuilder\Expr;
 
 class WhereCondition implements Parse
 {
-    protected $contain;
+    protected $container;
+    protected $tag = 'WHERE';
 
 
     /**
@@ -14,43 +15,47 @@ class WhereCondition implements Parse
      * @param $item
      */
     public function addWhere(Conjunct $item) {
-        $this->contain[] = $item;
+        $this->container[] = $item;
+    }
+    
+    public function isEmpty() {
+        return empty($this->container);
     }
 
     public function compile() : array
     {
-        if (empty($this->contain)) {
-            return ['', []];
-        }
-
-        $first = true;
-
-        $bindValue = [];
-
-        $list = array_map(function (Conjunct $it) use (&$first, &$bindValue) {
-
-            if ($first) {
-                $prefix = '';
-                $first = false;
-            } else {
-                $prefix = ($it->isAnd() ? 'AND' : 'OR') . ' ';
-            }
-
-            [$sql, $value] = $it->compile();
-
-            if (!empty($value)) {
-                if (is_array($value)) {
-                    $bindValue = array_merge($bindValue, $value);
+        return compileWithDefault($this->isEmpty(), function () {
+            $first = true;
+    
+            $bindValue = [];
+    
+            $list = array_map(function (Conjunct $it) use (&$first, &$bindValue) {
+        
+                if ($first) {
+                    $prefix = '';
+                    $first = false;
                 } else {
-                    $bindValue[] = $value;
+                    $prefix = ($it->isAnd() ? 'AND' : 'OR') . ' ';
                 }
-            }
+        
+                [$sql, $value] = $it->compile();
+        
+                if (!empty($value)) {
+                    if (is_array($value)) {
+                        $bindValue = array_merge($bindValue, $value);
+                    } else {
+                        $bindValue[] = $value;
+                    }
+                }
+        
+                return sprintf('%s%s', $prefix, $sql);
+        
+            }, $this->container);
+    
+            return [prefixSpace(sprintf('%s %s', $this->tag, implode(' ', $list))), $bindValue];
+        }, ['', []]);
 
-            return sprintf('%s%s', $prefix, $sql);
-
-        }, $this->contain);
-
-        return [sprintf('%s', implode(' ', $list)), $bindValue];
+        
     }
 
 
