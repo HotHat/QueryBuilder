@@ -4,10 +4,14 @@
 namespace SqlBuilder\Expr;
 
 
-class GroupBy extends Column
+class GroupBy extends Column implements CompileToString
 {
     protected $tag = 'GROUP BY';
 
 
 
+    public function compile()
+    {
+        return compileToString($this);
+    }
 }

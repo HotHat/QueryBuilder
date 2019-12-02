@@ -14,11 +14,12 @@ class SelectExpr
     private $orderBy;
     private $limit;
     private $forUpdate;
+    private $union;
 
     public function __construct(
         Select $select, Table $from, WhereCondition $where,
         GroupBy $groupBy, HavingCondition $having, OrderBy $orderBy,
-        Limit $limit, ForUpdate $forUpdate)
+        Limit $limit, ForUpdate $forUpdate, Union $union)
     {
 
         $this->select = $select;
@@ -29,16 +30,19 @@ class SelectExpr
         $this->orderBy = $orderBy;
         $this->limit = $limit;
         $this->forUpdate = $forUpdate;
+        $this->union = $union;
     }
 
     public function compile() :array
     {
         [$whereSql, $value] = $this->where->compile();
         [$havingSql, $value2] = $this->having->compile();
-        $bindValue = $value;
-        $bindValue = array_merge($bindValue, $value2);
 
-        $sql = trim(sprintf('%s%s%s%s%s%s%s%s',
+        [$unionSql, $value3] = $this->union->compile();
+
+        $bindValue = array_merge($value, $value2, $value3);
+
+        $sql = trim(sprintf('%s%s%s%s%s%s%s%s%s',
             $this->select->compile(),
             $this->from->compile(),
             $whereSql,
@@ -47,6 +51,7 @@ class SelectExpr
             $this->orderBy->compile(),
             $this->limit->compile(),
             $this->forUpdate->compile(),
+            $unionSql
         ));
 
         return [$sql, $bindValue];

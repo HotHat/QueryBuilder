@@ -44,7 +44,7 @@ class Select extends Column
             $sql = str_replace($this->tag, $this->tag . ' DISTINCT', $sql);
             return $sql;
         }
-        return parent::compile();
+        return compileToString($this);
     }
 
 }

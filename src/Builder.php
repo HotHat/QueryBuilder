@@ -28,6 +28,7 @@ use SqlBuilder\Expr\Select;
 use SqlBuilder\Expr\Select as SelectClause;
 use SqlBuilder\Expr\SelectCompile;
 use SqlBuilder\Expr\SelectExpr;
+use SqlBuilder\Expr\Union;
 use SqlBuilder\Expr\UpdatePair;
 use SqlBuilder\Expr\Table;
 use SqlBuilder\Expr\UpdateCompile;
@@ -51,6 +52,7 @@ class Builder
         'limit',
         'forUpdate',
         'updateSet',
+        'union'
     ];
     protected $stack;
     protected $isInStack;
@@ -68,6 +70,7 @@ class Builder
             'forUpdate' => new ForUpdate(),
             'updateSet' => new UpdatePair(),
             'insertValue' => new InsertValue(),
+            'union' => new Union()
         ];
         $this->stack = [];
         $this->isInStack = false;
@@ -102,6 +105,10 @@ class Builder
         return $this;
     }
 
+    public function union(Builder $builder) {
+        $this->container['union']->addItem(Value::raw($builder));
+        return $this;
+    }
 
 
     public function table(...$table) {
@@ -255,7 +262,9 @@ class Builder
             $this->container['having'],
             $this->container['orderBy'],
             $this->container['limit'],
-            $this->container['forUpdate']
+            $this->container['forUpdate'],
+            $this->container['union'],
+
         );
 
         $result = $expr->compile();
@@ -295,5 +304,21 @@ class Builder
         return $this;
     }
 
+
+    private function toSelectSql() {
+
+    }
+
+    private function toInsertSql() {
+
+    }
+
+    private function toUpdateSql() {
+
+    }
+
+    public function toDeleteSql() {
+
+    }
 
 }

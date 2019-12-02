@@ -109,4 +109,20 @@ class DatabaseTest extends TestCase
         $this->assertTrue($data);
     }
 
+    public function testUnion() {
+        $builder1 = new \SqlBuilder\Builder();
+        $builder2 = new \SqlBuilder\Builder();
+        $builder3 = new \SqlBuilder\Builder();
+
+        $builder1->table('user')->where('id', 1);
+        $builder3->table('user')->where('id', 4);
+
+        $data = $builder2->table('user')->where('name', 'god')
+            ->union($builder1)
+            ->union($builder3)
+            ->get();
+
+        var_dump($data);
+    }
+
 }
