@@ -38,7 +38,7 @@ class SelectExpr
         $bindValue = $value;
         $bindValue = array_merge($bindValue, $value2);
 
-        $sql = sprintf('%s%s%s%s%s%s%s%s',
+        $sql = trim(sprintf('%s%s%s%s%s%s%s%s',
             $this->select->compile(),
             $this->from->compile(),
             $whereSql,
@@ -47,7 +47,7 @@ class SelectExpr
             $this->orderBy->compile(),
             $this->limit->compile(),
             $this->forUpdate->compile(),
-        );
+        ));
 
         return [$sql, $bindValue];
     }

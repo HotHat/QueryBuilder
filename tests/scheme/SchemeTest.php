@@ -196,7 +196,7 @@ class SchemeTest extends TestCase
     }
 
     public function testSet() {
-        $u = new \SqlBuilder\Expr\Set();
+        $u = new \SqlBuilder\Expr\UpdatePair();
         $u->addItem(['name', 'name']);
         $u->addItem(['id', 1]);
 

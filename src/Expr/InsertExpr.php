@@ -15,7 +15,12 @@ class InsertExpr implements Parse
         $this->values = $values;
     }
 
-    public function compile() {
+    public function compile() : array {
 
+        $sql = trim(sprintf('INSERT%s%s',
+            $this->table->compile(),
+            $this->values->compile(),
+        ));
+        return [$sql, []];
     }
 }

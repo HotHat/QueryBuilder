@@ -16,32 +16,33 @@ class Column implements Parse
         $this->container = [];
     }
 
-    public function addItem($it) {
+    public function addItem(Value $it) {
         array_push($this->container, $it);
     }
 
-    public function escapeCode() : string
-    {
-       return $this->escape ? '`' : '';
+    public function addFront(Value $it) {
+        array_push($this->container, $it);
     }
+
 
     public function isEmpty() {
        return empty($this->container);
     }
 
-    public function emptyHandle($func) {
-        return compileWithDefault($this->isEmpty(), $func, '');
-    }
-
     public function compile() : string {
-        return $this->emptyHandle(function() {
-            $column = array_map(function ($it) {
-                return wrapValue($it);
+        return compileWithDefault($this->isEmpty(), function () {
+            $column = array_map(function (Value $it) {
+                return $it->toString(function ($it) {
+                    if ($it->isRaw()) {
+                        return $it->getValue();
+                    } else {
+                        return wrapValue($it->getValue());
+                    }
+                });
             }, $this->container);
 
             return sprintf(' %s %s', $this->tag, implode(', ', $column));
         });
-
     }
 
 }

@@ -12,7 +12,7 @@ class UpdateExpr implements Parse
     private $orderBy;
     private $limit;
 
-    public function __construct($table, $set, $where, $orderBy, $limit)
+    public function __construct(Table $table, UpdatePair $set, WhereCondition $where, OrderBy $orderBy, Limit $limit)
     {
         $this->table = $table;
         $this->set = $set;
@@ -23,14 +23,16 @@ class UpdateExpr implements Parse
 
     public function compile(): array
     {
-        $sql = trim(sprintf('%s%s%s%s%s',
-            $this->compileUpdate(),
-            $this->compileSet(),
-            $this->compileWhere(),
-            $this->compileOrderBy(),
-            $this->compileLimit(),
+        [$sql, $bindValue] = $this->where->compile();
+
+        $sql = trim(sprintf('UPDATE%sSET %s%s%s%s',
+            $this->table->compile(),
+            $this->set->compile(),
+            $sql,
+            $this->orderBy->compile(),
+            $this->limit->compile(),
         ));
-        return [$sql, $this->bindValue];
+        return [$sql, $bindValue];
     }
 
 }

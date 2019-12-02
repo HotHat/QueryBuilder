@@ -8,7 +8,7 @@ class ForUpdate extends Column
 {
     public function compile(): string
     {
-        return $this->emptyHandle(function() {
+        return compileWithDefault($this->isEmpty(), function () {
             return 'FOR UPDATE';
         });
     }

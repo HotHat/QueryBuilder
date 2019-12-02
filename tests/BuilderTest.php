@@ -6,6 +6,11 @@ use PHPUnit\Framework\TestCase;
 class BuilderTest extends TestCase
 {
 
+    private $builder;
+    public function setUp() : void {
+        $this->builder = new \SqlBuilder\Builder();
+    }
+
     public function testGet() {
 
         $builder = new \SqlBuilder\Builder();
@@ -86,6 +91,30 @@ class BuilderTest extends TestCase
             ->join('orders', 'users.id', '=', 'orders.user_id')->get();
         
         var_dump($sql);
+    }
+
+
+    public function testUpdate() {
+        $r = $this->builder->table('users')
+            ->where('id', 1)
+            ->update([
+                'votes' => 1,
+                'name' => 'hello world',
+                'age' => 12,
+            ]);
+
+        var_dump($r);
+    }
+
+    public function testInsert() {
+        $r = $this->builder->table('user')
+            ->insert([
+                'id' => 1,
+                'name' => 'hello world',
+                'age' => 12,
+            ]);
+
+        var_dump($r);
     }
 
 

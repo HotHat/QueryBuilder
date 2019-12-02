@@ -41,6 +41,6 @@ class Table extends Column
             return implode(' ', $s);
         });
         
-        return sprintf('%s%s', parent::compile(), prefixSpace($l));
+        return sprintf(' %s%s', trim(parent::compile()), prefixSpace($l));
     }
 }

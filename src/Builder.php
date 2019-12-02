@@ -10,6 +10,8 @@ use SqlBuilder\Expr\From;
 use SqlBuilder\Expr\GroupBy;
 use SqlBuilder\Expr\Having;
 use SqlBuilder\Expr\HavingCondition;
+use SqlBuilder\Expr\InsertExpr;
+use SqlBuilder\Expr\InsertValue;
 use SqlBuilder\Expr\Join;
 use SqlBuilder\Expr\LeftJoin;
 use SqlBuilder\Expr\Limit;
@@ -22,10 +24,11 @@ use SqlBuilder\Expr\Select;
 use SqlBuilder\Expr\Select as SelectClause;
 use SqlBuilder\Expr\SelectCompile;
 use SqlBuilder\Expr\SelectExpr;
-use SqlBuilder\Expr\Set;
+use SqlBuilder\Expr\UpdatePair;
 use SqlBuilder\Expr\Table;
 use SqlBuilder\Expr\UpdateCompile;
 use SqlBuilder\Expr\UpdateExpr;
+use SqlBuilder\Expr\Value;
 use SqlBuilder\Expr\Where;
 use SqlBuilder\Expr\WhereCondition;
 use SqlBuilder\Expr\WhereGroup;
@@ -53,14 +56,14 @@ class Builder
         $this->container = [
             'table' => new Table(),
             'where' => new WhereCondition(),
-            'values' => [], // TODO: Not implement yet
             'select' => new Select(),
             'groupBy' => new GroupBy(),
             'having' => new HavingCondition(),
             'orderBy' => new OrderBy(),
             'limit' => new Limit(),
             'forUpdate' => new ForUpdate(),
-            'updateSet' => new Set(),
+            'updateSet' => new UpdatePair(),
+            'insertValue' => new InsertValue(),
         ];
         $this->stack = [];
         $this->isInStack = false;
@@ -69,15 +72,20 @@ class Builder
     public function select(...$column)
     {
         foreach ($column as $it) {
-            $this->container['select']->addItem($it);
+            $this->container['select']->addItem(Value::make($it));
         }
 
         return $this;
     }
 
+    public function distinct() {
+        $this->container['select']->addFront(Value::raw('DISTINCT'));
+        return $this;
+    }
+
     public function table(...$table) {
         foreach ($table as $it) {
-            $this->container['table']->addItem($it);
+            $this->container['table']->addItem(Value::make($it));
         }
 
         return $this;
@@ -169,7 +177,7 @@ class Builder
     public function update($data)
     {
         foreach ($data as $k => $v) {
-            $this->container['updateSet']->addItem([$k, $v]);
+            $this->container['updateSet']->addItem(Value::make([$k, $v]));
         }
 
         $expr = new UpdateExpr($this->container['table'],
@@ -181,6 +189,18 @@ class Builder
 
         return $expr->compile();
 
+    }
+
+    public function insert($data) {
+        foreach ($data as $k => $v) {
+            $this->container['insertValue']->addItem(Value::make([$k, $v]));
+        }
+
+        $expr = new InsertExpr($this->container['table'],
+            $this->container['insertValue'],
+        );
+
+        return $expr->compile();
     }
     
     public function join($table, $leftCol, $condition, $rightCol) {
@@ -219,11 +239,14 @@ class Builder
     }
 
     public function limit($offset, $row = '') {
-        $this->container['limit']->addItem($offset);
+        $limit = new Limit();
+        $limit->addItem(Value::raw($offset));
 
         if (!empty($row)) {
-            $this->container['limit']->addItem($row);
+            $limit->addItem(Value::raw($row));
         }
+
+        $this->container['limit'] = $limit;
 
         return $this;
     }
@@ -241,9 +264,10 @@ class Builder
     public function orderBy($name, $direction = '') {
         $orderBy = new OrderByItem($name, $direction);
 
-        $this->container['orderBy']->addItem($orderBy);
+        $this->container['orderBy']->addItem(Value::make($orderBy));
 
         return $this;
     }
+
 
 }
