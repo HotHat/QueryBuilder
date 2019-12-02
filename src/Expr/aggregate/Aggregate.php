@@ -4,7 +4,16 @@
 namespace SqlBuilder\Expr\aggregate;
 
 
-class Aggregate
+use SqlBuilder\Expr\Parse;
+
+abstract class Aggregate implements Parse
 {
+    protected $column;
+
+    public function __construct($column)
+    {
+
+        $this->column = $column;
+    }
 
 }

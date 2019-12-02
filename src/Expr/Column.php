@@ -8,8 +8,6 @@ class Column implements Parse
 {
     protected $container;
     protected $tag;
-    protected $escape = true;
-
 
     public function __construct()
     {
@@ -21,7 +19,7 @@ class Column implements Parse
     }
 
     public function addFront(Value $it) {
-        array_push($this->container, $it);
+        array_unshift($this->container, $it);
     }
 
 

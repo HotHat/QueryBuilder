@@ -4,6 +4,9 @@
 namespace SqlBuilder;
 
 
+use SqlBuilder\Expr\aggregate\Avg;
+use SqlBuilder\Expr\aggregate\Count;
+use SqlBuilder\Expr\aggregate\Max;
 use SqlBuilder\Expr\ForShare;
 use SqlBuilder\Expr\ForUpdate;
 use SqlBuilder\Expr\From;
@@ -79,9 +82,26 @@ class Builder
     }
 
     public function distinct() {
-        $this->container['select']->addFront(Value::raw('DISTINCT'));
+        $this->container['select']->setDistinct(true);
         return $this;
     }
+
+    public function count() {
+        $this->container['select']->setAggregate(new Count());
+        return $this;
+    }
+
+    public function max($column) {
+        $this->container['select']->setAggregate(new Max($column));
+        return $this;
+    }
+
+    public function avg($column) {
+        $this->container['select']->setAggregate(new Avg($column));
+        return $this;
+    }
+
+
 
     public function table(...$table) {
         foreach ($table as $it) {

@@ -117,5 +117,39 @@ class BuilderTest extends TestCase
         var_dump($r);
     }
 
+    public function testCount() {
+        $r = $this->builder->table('user')
+            ->count()
+            ->get();
+
+        var_dump($r);
+    }
+
+    public function testDistinct() {
+        $r = $this->builder->table('user')
+            ->distinct()
+            ->get();
+
+        var_dump($r);
+    }
+
+    public function testMax() {
+        $r = $this->builder->table('user')
+            ->max('id')
+            ->get();
+
+        var_dump($r);
+    }
+
+    public function testAvg() {
+        $r = $this->builder->table('users')
+            ->avg('id')
+            ->get();
+
+        var_dump($r);
+    }
+
+
+
 
 }

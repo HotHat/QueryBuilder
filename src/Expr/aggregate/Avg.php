@@ -6,14 +6,10 @@ namespace SqlBuilder\Expr\aggregate;
 
 use function SqlBuilder\Expr\wrapValue;
 
-class Count extends Aggregate
+class Avg extends Aggregate
 {
-    public function __construct()
-    {
-    }
-
     public function compile()
     {
-        return sprintf('COUNT(*) as count');
+        return sprintf('AVG(%s) as avg', wrapValue($this->column));
     }
 }
