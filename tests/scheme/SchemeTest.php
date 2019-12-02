@@ -8,6 +8,7 @@ use SqlBuilder\Expr\Select;
 use SqlBuilder\Expr\Where;
 use SqlBuilder\Expr\OrWhere;
 use SqlBuilder\Expr\WhereItem;
+use SqlBuilder\Expr\Value;
 
 class SchemeTest extends TestCase
 {
@@ -85,7 +86,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \ZiWen\SqlBuilder\scheme\WhereCondition();
+        $g = new \SqlBuilder\Expr\WhereCondition();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -111,7 +112,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \ZiWen\SqlBuilder\scheme\WhereGroup();
+        $g = new \SqlBuilder\Expr\WhereGroup();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -135,7 +136,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \ZiWen\SqlBuilder\scheme\OrWhereGroup();
+        $g = new \SqlBuilder\Expr\OrWhereGroup();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -154,11 +155,11 @@ class SchemeTest extends TestCase
 
     public function testLimit() {
         $l = new \SqlBuilder\Expr\Limit();
-        $l->addItem('1');
+        $l->addItem(\SqlBuilder\Expr\Value::raw('1'));
         $expect = 'LIMIT 1';
         $this->assertEquals($expect, $l->compile());
 
-        $l->addItem('3');
+        $l->addItem(\SqlBuilder\Expr\Value::raw('3'));
         $expect = 'LIMIT 1, 3';
         $this->assertEquals($expect, $l->compile());
 
@@ -178,9 +179,9 @@ class SchemeTest extends TestCase
 
     public function testGroupBy()
     {
-        $g = new \ZiWen\SqlBuilder\scheme\GroupBy();
-        $g->addItem('first_name');
-        $g->addItem('status');
+        $g = new \SqlBuilder\Expr\GroupBy();
+        $g->addItem(Value::make('first_name'));
+        $g->addItem(Value::raw('status'));
 
         $expect = 'GROUP BY `first_name`, `status`';
         $this->assertEquals($expect, $g->compile());
@@ -188,7 +189,7 @@ class SchemeTest extends TestCase
 
     public function testUpdate() {
         $u = new \SqlBuilder\Expr\Update();
-        $u->addItem('users');
+        $u->addItem(Value::make('users'));
 
         $sql = $u->compile();
 
@@ -197,8 +198,8 @@ class SchemeTest extends TestCase
 
     public function testSet() {
         $u = new \SqlBuilder\Expr\UpdatePair();
-        $u->addItem(['name', 'name']);
-        $u->addItem(['id', 1]);
+        $u->addItem(Value::make(['name', 'name']));
+        $u->addItem(Value::make(['id', 1]));
 
         $sql = $u->compile();
 
