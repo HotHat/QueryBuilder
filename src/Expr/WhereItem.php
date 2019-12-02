@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-abstract class WhereItem implements Parse, Conjunct
+abstract class WhereItem implements Conjunct
 {
 
     private $number;
@@ -52,11 +52,11 @@ abstract class WhereItem implements Parse, Conjunct
     }
 
     private function passTwo($f, $s) : array {
-        return [sprintf("`%s`='%s'", $f, '?'), $s];
+        return [sprintf("`%s`=%s", $f, '?'), $s];
     }
 
     private function passThree($f, $s, $t) : array {
-        return [sprintf("`%s`%s'%s'", $f, $s, '?'), $t];
+        return [sprintf("`%s`%s%s", $f, $s, '?'), $t];
     }
 
 }

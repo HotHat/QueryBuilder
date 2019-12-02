@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class InsertExpr implements Parse
+class InsertExpr implements CompileToPair
 {
     private $table;
     private $values;
@@ -17,10 +17,13 @@ class InsertExpr implements Parse
 
     public function compile() : array {
 
+
+        [$sqlValue, $bindValue] = $this->values->compile();
+
         $sql = trim(sprintf('INSERT%s%s',
             $this->table->compile(),
-            $this->values->compile(),
+            $sqlValue
         ));
-        return [$sql, []];
+        return [$sql, $bindValue];
     }
 }

@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class ForUpdate extends Column
+class ForUpdate extends Column implements CompileToString
 {
     public function compile(): string
     {

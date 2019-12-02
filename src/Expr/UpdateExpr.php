@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class UpdateExpr implements Parse
+class UpdateExpr implements CompileToPair
 {
     private $table;
     private $set;
@@ -23,12 +23,14 @@ class UpdateExpr implements Parse
 
     public function compile(): array
     {
-        [$sql, $bindValue] = $this->where->compile();
+        [$sqlSet, $bindValue] = $this->set->compile();
+        [$sqlWhere, $value] = $this->where->compile();
+        $bindValue = array_merge($bindValue, $value);
 
-        $sql = trim(sprintf('UPDATE%sSET %s%s%s%s',
+        $sql = trim(sprintf('UPDATE%s SET %s%s%s%s',
             $this->table->compile(),
-            $this->set->compile(),
-            $sql,
+            $sqlSet,
+            $sqlWhere,
             $this->orderBy->compile(),
             $this->limit->compile(),
         ));

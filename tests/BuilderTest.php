@@ -106,6 +106,14 @@ class BuilderTest extends TestCase
         var_dump($r);
     }
 
+    public function testDelete() {
+        $r = $this->builder->table('users')
+            ->where('id', 1)
+            ->delete();
+
+        var_dump($r);
+    }
+
     public function testInsert() {
         $r = $this->builder->table('user')
             ->insert([

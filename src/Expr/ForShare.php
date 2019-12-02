@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class ForShare extends Column
+class ForShare extends Column implements CompileToString
 {
     public function compile(): string
     {

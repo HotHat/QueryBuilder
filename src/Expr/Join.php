@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class Join implements Parse
+class Join implements CompileToString
 {
     protected $tag = 'JOIN';
     protected $leftCol;

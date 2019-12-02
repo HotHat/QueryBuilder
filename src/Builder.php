@@ -7,6 +7,7 @@ namespace SqlBuilder;
 use SqlBuilder\Expr\aggregate\Avg;
 use SqlBuilder\Expr\aggregate\Count;
 use SqlBuilder\Expr\aggregate\Max;
+use SqlBuilder\Expr\DeleteExpr;
 use SqlBuilder\Expr\ForShare;
 use SqlBuilder\Expr\ForUpdate;
 use SqlBuilder\Expr\From;
@@ -220,6 +221,11 @@ class Builder
             $this->container['insertValue'],
         );
 
+        return $expr->compile();
+    }
+
+    public function delete() {
+        $expr = new DeleteExpr($this->container['table'], $this->container['where']);
         return $expr->compile();
     }
     

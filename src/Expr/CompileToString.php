@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-interface Parse
+interface CompileToString
 {
     public function compile();
 

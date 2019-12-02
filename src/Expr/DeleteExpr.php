@@ -4,20 +4,25 @@
 namespace SqlBuilder\Expr;
 
 
-class DeleteExpr implements Parse
+class DeleteExpr implements CompileToPair
 {
     private $table;
-    private $from;
     private $where;
 
-    public function __construct($table, $from, $where)
+    public function __construct($table, $where)
     {
         $this->table = $table;
-        $this->from = $from;
         $this->where = $where;
     }
 
-    public function compile() {
+    public function compile() : array {
+        [$sqlWhere, $bindValue] = $this->where->compile();
+
+        $sql = trim(sprintf('DELETE FROM%s%s',
+            $this->table->compile(),
+            $sqlWhere,
+        ));
+        return [$sql, $bindValue];
 
     }
 

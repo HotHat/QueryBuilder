@@ -4,9 +4,9 @@
 namespace SqlBuilder\Expr\aggregate;
 
 
-use SqlBuilder\Expr\Parse;
+use SqlBuilder\Expr\CompileToPair;
 
-abstract class Aggregate implements Parse
+abstract class Aggregate implements CompileToPair
 {
     protected $column;
 

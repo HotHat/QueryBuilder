@@ -7,5 +7,6 @@ namespace SqlBuilder\Expr;
 interface Conjunct
 {
     public function isAnd();
+    public function compile() : array;
 
 }

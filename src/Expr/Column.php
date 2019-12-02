@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class Column implements Parse
+class Column
 {
     protected $container;
     protected $tag;
@@ -27,20 +27,28 @@ class Column implements Parse
        return empty($this->container);
     }
 
-    public function compile() : string {
-        return compileWithDefault($this->isEmpty(), function () {
-            $column = array_map(function (Value $it) {
-                return $it->toString(function ($it) {
-                    if ($it->isRaw()) {
-                        return $it->getValue();
-                    } else {
-                        return wrapValue($it->getValue());
-                    }
-                });
-            }, $this->container);
-
-            return sprintf(' %s %s', $this->tag, implode(', ', $column));
-        });
+    public function getContainer() {
+        return $this->container;
     }
+
+    public function getTag() {
+        return $this->tag;
+    }
+
+    // public function compile() : string {
+    //     return compileWithDefault($this->isEmpty(), function () {
+    //         $column = array_map(function (Value $it) {
+    //             return $it->toString(function ($it) {
+    //                 if ($it->isRaw()) {
+    //                     return $it->getValue();
+    //                 } else {
+    //                     return wrapValue($it->getValue());
+    //                 }
+    //             });
+    //         }, $this->container);
+    //
+    //         return sprintf(' %s %s', $this->tag, implode(', ', $column));
+    //     });
+    // }
 
 }

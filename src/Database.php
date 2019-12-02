@@ -47,6 +47,7 @@ class Database
 
     public function select(string $sql, array $params, $multiple = false) {
         return $this->query($sql, $params, function ($pdo, $stmt) use ($multiple) {
+            $stmt->setFetchMode($this->fetchMode);
             if ($multiple) {
                 return $stmt->fetchAll();
             }
@@ -69,7 +70,6 @@ class Database
     private function query(string $sql, array $params, Closure $func, $failValue) {
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->setFetchMode($this->fetchMode);
 
         if ($stmt->execute($params)) {
             // select statement

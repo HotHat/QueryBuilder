@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class WhereCondition implements Parse
+class WhereCondition implements CompileToPair
 {
     protected $container;
     protected $tag = 'WHERE';

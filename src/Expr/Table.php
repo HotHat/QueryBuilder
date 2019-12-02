@@ -4,7 +4,7 @@
 namespace SqlBuilder\Expr;
 
 
-class Table extends Column
+class Table extends Column implements CompileToString
 {
     protected $tag = '';
     protected $join = [];
@@ -41,6 +41,6 @@ class Table extends Column
             return implode(' ', $s);
         });
         
-        return sprintf(' %s%s', trim(parent::compile()), prefixSpace($l));
+        return sprintf(' %s%s', trim(compileToString($this)), prefixSpace($l));
     }
 }

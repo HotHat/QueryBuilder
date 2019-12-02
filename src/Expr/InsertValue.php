@@ -6,7 +6,8 @@ namespace SqlBuilder\Expr;
 
 class InsertValue extends Column
 {
-    public function compile(): string
+
+    public function compile(): array
     {
         $cols = [];
         $values = [];
@@ -20,11 +21,14 @@ class InsertValue extends Column
             return wrapValue($it);
         }, $cols);
 
-        $values = array_map(function ($it) {
-            return sprintf("'%s'", $it);
+        $marks = array_map(function ($it) {
+            return "?";
         }, $values);
 
-        return sprintf('(%s) VALUES (%s)', implode(', ', $cols), implode(', ', $values));
+        return [
+            sprintf('(%s) VALUES (%s)', implode(', ', $cols), implode(', ', $marks)),
+            $values
+        ];
     }
 
 }

@@ -7,6 +7,9 @@ namespace SqlBuilder\Expr;
 class Limit extends Column
 {
     protected $tag = 'LIMIT';
-    protected $escape = false;
+
+    public function compile() : string {
+        return compileToString($this);
+    }
 
 }
