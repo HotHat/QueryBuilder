@@ -52,8 +52,8 @@ class Builder
         'updateSet',
         'union'
     ];
-    protected $stack;
-    protected $isInStack;
+    private $stack;
+    private $isInStack;
     private $connection;
     private $queryType;
     private $extraData;
@@ -136,7 +136,6 @@ class Builder
         });
     }
 
-
     public function table(...$table) {
         return tap($this, function($it) use ($table) {
             $tb = new Table();
@@ -152,17 +151,16 @@ class Builder
         return $this->table(...$table);
     }
 
-    public function where(...$where)
-    {
+    public function where(...$where) {
         return tap($this, function($it) use ($where) {
             if (is_callable($where[0])) {
                 $fn = $where[0];
-                $this->isInStack = true;
+                $it->isInStack = true;
 
                 $fn($it);
 
                 $whereGroup = new WhereGroup();
-                foreach ($this->stack as $w) {
+                foreach ($it->stack as $w) {
                     $whereGroup->addWhere($w);
                 }
 
@@ -180,8 +178,6 @@ class Builder
                     $it->container['where']->addWhere($where);
                 }
             }
-
-
         });
     }
 
@@ -230,27 +226,6 @@ class Builder
         return $this;
     }
 
-    public function get() {
-       return $this->getQueryData(self::SELECT, [], true);
-    }
-
-    public function first()
-    {
-        return $this->getQueryData(self::SELECT, [], false);
-    }
-
-    public function update(array $data)
-    {
-        return $this->getQueryData(self::UPDATE, $data);
-    }
-
-    public function insert(array $data) {
-        return $this->getQueryData(self::INSERT, $data);
-    }
-
-    public function delete() {
-        return $this->getQueryData(self::DELETE);
-    }
     
     public function join($table, $leftCol, $condition, $rightCol) {
         $this->container['table']->addJoin(new Join($table, $leftCol, $condition, $rightCol));
@@ -267,40 +242,57 @@ class Builder
         return $this;
     }
     
-    
-
-
     public function limit($offset, $row = '') {
-        $limit = new Limit();
-        $limit->addItem(Value::raw($offset));
+        return tap($this, function ($it) use ($offset, $row) {
+            $limit = new Limit();
+            $limit->addItem(Value::raw($offset));
 
-        if (!empty($row)) {
-            $limit->addItem(Value::raw($row));
-        }
+            if (!empty($row)) {
+                $limit->addItem(Value::raw($row));
+            }
 
-        $this->container['limit'] = $limit;
-
-        return $this;
+            $it->container['limit'] = $limit;
+        });
     }
 
     public function forUpdate() {
-        $this->container['forUpdate'] = new ForUpdate();
-        return $this;
+        return tap($this, function ($it) {
+            $it->container['forUpdate'] = new ForUpdate();
+        });
     }
 
     public function forShare() {
-        $this->container['forUpdate'] = new ForShare();
-        return $this;
+        return tap($this, function ($it) {
+            $it->container['forUpdate'] = new ForShare();
+        });
     }
 
     public function orderBy($name, $direction = '') {
-        $orderBy = new OrderByItem($name, $direction);
-
-        $this->container['orderBy']->addItem(Value::make($orderBy));
-
-        return $this;
+        return tap($this, function ($it) use ($name, $direction){
+            $orderBy = new OrderByItem($name, $direction);
+            $it->container['orderBy']->addItem(Value::make($orderBy));
+        });
     }
 
+    public function get() {
+        return $this->getQueryData(self::SELECT, [], true);
+    }
+
+    public function first() {
+        return $this->getQueryData(self::SELECT, [], false);
+    }
+
+    public function update(array $data) {
+        return $this->getQueryData(self::UPDATE, $data);
+    }
+
+    public function insert(array $data) {
+        return $this->getQueryData(self::INSERT, $data);
+    }
+
+    public function delete() {
+        return $this->getQueryData(self::DELETE);
+    }
 
     public function enableQueryLog() {
         $this->enableLog = true;
@@ -378,7 +370,6 @@ class Builder
         );
 
         return $expr->compile();
-
     }
 
     private function toUpdateSql(array $data) {
@@ -394,18 +385,10 @@ class Builder
         );
 
         return $expr->compile();
-
     }
 
     private function toDeleteSql() {
         $expr = new DeleteExpr($this->container['table'], $this->container['where']);
         return $expr->compile();
     }
-
-    private function setQueryType($type, $extraData = []) {
-        $this->queryType = $type;
-        $this->extraData = $extraData;
-    }
-
-
 }
