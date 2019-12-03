@@ -27,13 +27,14 @@ class BuilderTest extends TestCase
         var_dump($sql);
     }
 
+    public function testSelectRaw() {
+        $sql = $this->builder->table('users')->selectRaw('price * ?', [123])->where('id', 1)->get();
+
+        var_dump($sql);
+    }
+
     public function testOrderBy() {
-        $builder = new \SqlBuilder\Builder();
-        // $sql = $builder->table('users')->select('id', 'name')->where('id', 1)->orderBy('id')->get();
-        // var_dump($sql);
-        // $sql = $builder->table('users')->select('id', 'name')->where('id', 1)->orderBy('id', 'ASC')->get();
-        // var_dump($sql);
-        $sql = $builder->table('users')
+        $sql = $this->builder->table('users')
             ->select('id', 'name')
             ->where('id', 1)
             ->orderBy('id', 'DESC')

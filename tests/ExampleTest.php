@@ -74,6 +74,18 @@ class ExampleTest extends  TestCase
         $this->assertIsArray($sql);
     }
 
+    public function testReplace() {
+        // $str = str_ireplace(['?1', '?2', '?3', '?4'], [1, 2, 3, 4], '?1 ?2 ?3 ?4');
+        // echo str_replace('?', '1234', '? ? ? ?', );
+        // $sub = '?1 ?2 ?3 ?4';
+        // preg_match_all('/\?/', $sub, $math);
+        //
+        // var_dump($math);
+
+        $str = preg_replace('/\?/', '123', '? ? ?', 1);
+        echo $str;
+    }
+
 
 
 }

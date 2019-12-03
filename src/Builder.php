@@ -84,6 +84,14 @@ class Builder
 
         return $this;
     }
+    public function selectRaw($sql, $bindValue = []) {
+
+        foreach ($bindValue as $it) {
+            $sql = preg_replace('/\?/', $it, $sql, 1);
+        }
+        $this->container['select']->addItem(Value::raw($sql));
+        return $this;
+    }
 
     public function distinct() {
         $this->container['select']->setDistinct(true);
