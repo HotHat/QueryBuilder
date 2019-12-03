@@ -28,7 +28,7 @@ class DatabaseTest extends TestCase
      */
     private $user;
     /**
-     * @var \SqlBuilder\Database
+     * @var \SqlBuilder\MysqlConnection
      */
     private $db;
     /**
@@ -45,7 +45,7 @@ class DatabaseTest extends TestCase
        $this->user = 'homestead';
        $this->passward = 'secret';
 
-      $this->db = new \SqlBuilder\Database($this->host, $this->port, $this->dbname, $this->user, $this->passward);
+      $this->db = new \SqlBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->passward);
       $this->builder = new \SqlBuilder\Builder();
 
     }

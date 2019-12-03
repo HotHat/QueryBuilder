@@ -3,6 +3,8 @@
 
 namespace SqlBuilder\Expr;
 
+use Closure;
+
 function prefixSpace($str) {
     return empty($str) ? '' :sprintf(' %s', $str);
 }
@@ -37,4 +39,11 @@ function compileToString(Column $container) : string {
 
         return sprintf(' %s %s', $container->getTag(), implode(', ', $column));
     });
+}
+
+function tap($it, Closure $func = null) {
+    if (isset($func)) {
+        $func($it);
+    }
+    return $it;
 }

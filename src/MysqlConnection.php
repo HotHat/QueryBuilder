@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
-class Database
+class MysqlConnection
 {
     private $pdo;
 
