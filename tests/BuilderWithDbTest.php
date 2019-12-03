@@ -32,6 +32,9 @@ class BuilderWithDbTest extends TestCase
     }
 
     public function testGet() {
+        $sql = $this->builder->table('user')->get();
+
+        var_dump($sql);
 
         $sql = $this->builder->table('user')->where('id', 1)->get();
 
@@ -41,6 +44,12 @@ class BuilderWithDbTest extends TestCase
 
         var_dump($sql);
 
+    }
+    public function testLimit() {
+
+        $sql = $this->builder->table('user')->limit(2, 3)->get();
+
+        var_dump($sql);
     }
 
     public function testInset() {
