@@ -163,10 +163,10 @@ class Builder
         return $this->table(...$table);
     }
 
-    public function where(...$where) : Builder {
-        return tap($this, function($it) use ($where) {
-            if (is_callable($where[0])) {
-                $fn = $where[0];
+    public function where($first, $second, $third = null) : Builder {
+        return tap($this, function($it) use ($first, $second, $third) {
+            if (is_callable($first)) {
+                $fn = $first;
                 $it->isInStack = true;
 
                 $fn($it);
@@ -181,7 +181,7 @@ class Builder
 
                 $it->container['where']->addWhere($whereGroup);
             } else {
-                $where = new Where($where[0], $where[1] ?? null, $where[2] ?? null);
+                $where = new Where($first, is_null($third) ? '=' : $second, $third ?? $second);
 
                 if ($it->isInStack) {
                     $it->stack[] = $where;
@@ -193,38 +193,115 @@ class Builder
         });
     }
 
-    public function orWhere(...$where) : Builder
-    {
-        if (is_callable($where[0])) {
-            $fn = $where[0];
-            $this->isInStack = true;
+    public function orWhere($first, $second, $third) : Builder {
+        return tap($this, function ($it) use ($first, $second, $third) {
+            if (is_callable($first)) {
+                $fn = $first;
+                $it->isInStack = true;
 
-            $fn($this);
+                $fn($this);
 
-            $whereGroup = new OrWhereGroup();
-            foreach ($this->stack as $it) {
-                $whereGroup->addWhere($it);
+                $whereGroup = new OrWhereGroup();
+                foreach ($it->stack as $t) {
+                    $whereGroup->addWhere($t);
+                }
+
+                $it->stack = [];
+                $it->isInStack = false;
+
+                $it->container['where']->addWhere($whereGroup);
+
+            } else {
+                $where = new OrWhere($first, is_null($third) ? '=' : $second, $third ?? $second);
+
+                if ($it->isInStack) {
+                    $it->stack[] = $where;
+                } else {
+                    $this->container['where']->addWhere($where);
+                }
+            }
+        });
+    }
+
+    /*
+     * whereIn / whereNotIn / orWhereIn / orWhereNotIn / whereNull / whereNotNull / orWhereNull / orWhereNotNull {{{
+     */
+    public function whereIn(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'IN');
+    }
+
+    public function whereNotIn(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'NOT IN');
+    }
+
+    public function orWhereIn(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'IN', false);
+    }
+
+    public function orWhereNotIn(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'NOT IN', false);
+    }
+
+    public function whereBetween(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'BETWEEN');
+    }
+
+    public function whereNotBetween(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'NOT BETWEEN');
+    }
+
+    public function orWhereBetween(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'BETWEEN', false);
+    }
+
+    public function orWhereNotBetween(string $column, array $data) {
+        return $this->makeWhereInOrBetween($column, $data, 'NOT BETWEEN', false);
+    }
+
+    public function whereNull(string $column) {
+        return $this->makeWhereNull($column, 'IS NULL');
+    }
+
+    public function whereNotNull(string $column) {
+        return $this->makeWhereNull($column, 'IS NOT NULL');
+    }
+
+    public function orWhereNull(string $column) {
+        return $this->makeWhereNull($column, 'IS NULL', false);
+    }
+
+    public function orWhereNotNull(string $column) {
+        return $this->makeWhereNull($column, 'IS NOT NULL', false);
+    }
+
+
+    private function makeWhereInOrBetween(string $column, array $data, $op, bool $isAnd = true) : Builder {
+        return tap($this, function($it) use ($column, $data, $op, $isAnd) {
+            if ($isAnd) {
+                $where = new Where($column, $op, $data);
+            } else {
+                $where = new OrWhere($column, $op, $data);
             }
 
-            $this->stack = [];
-            $this->isInStack = false;
-
-            $this->container['where']->addWhere($whereGroup);
-
-            return $this;
-        }
-
-        $where = new OrWhere($where[0], $where[1] ?? null, $where[2] ?? null);
-
-        if ($this->isInStack) {
-            $this->stack[] = $where;
-
-        } else {
-            $this->container['where']->addWhere($where);
-        }
-
-        return $this;
+            $it->container['where']->addWhere($where);
+        });
     }
+
+    private function makeWhereNull(string $column, $op, bool $isAnd = true) : Builder {
+        return tap($this, function($it) use ($column, $op, $isAnd) {
+            if ($isAnd) {
+                $where = new Where($column, $op, []);
+            } else {
+                $where = new OrWhere($column, $op, []);
+            }
+
+            $it->container['where']->addWhere($where);
+        });
+    }
+
+    /*
+     * }}}
+     */
 
     public function having(...$where) : Builder
     {

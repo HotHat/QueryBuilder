@@ -19,7 +19,7 @@ class BuilderStatic
 
     public static function __callStatic($name, $arguments)
     {
-        if (in_array( $name, ['setConnection', 'enableQueryLog', 'getQueryLog', 'transaction'])) {
+        if (method_exists(get_called_class(), $name)) {
             return self::{$name}(...$arguments);
         }
 

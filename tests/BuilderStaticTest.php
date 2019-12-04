@@ -23,8 +23,6 @@ class BuilderStaticTest extends TestCase
 
         $connection = new \SqlBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
 
-        // $this->builder = new \SqlBuilder\Builder($connection);
-        // $this->builder->enableQueryLog();
         DB::setConnection($connection);
         DB::enableQueryLog();
     }
@@ -48,6 +46,51 @@ class BuilderStaticTest extends TestCase
         var_dump($sql);
 
     }
+    public function testWhere() {
+
+       $data = DB::table('user')->where('id', 1)->get();
+       var_dump($data);
+    }
+
+    public function testWhereIn() {
+        $data = DB::table('user')
+            ->whereIn('id', [1, 2, 3])
+            ->get();
+        var_dump($data);
+
+        $data = DB::table('user')
+            ->whereNotIn('id', [1, 2, 3])
+            ->get();
+
+        var_dump($data);
+    }
+
+    public function testNull() {
+        $data = DB::table('user')
+            ->whereNull('id')
+            ->get();
+        var_dump($data);
+
+        $data = DB::table('user')
+            ->whereNotNull('id')
+            ->get();
+
+        var_dump($data);
+    }
+
+    public function testWhereBetween() {
+        $data = DB::table('user')
+            ->whereBetween('id', [1, 3])
+            ->get();
+        var_dump($data);
+
+        $data = DB::table('user')
+            ->whereNotBetween('id', [1, 10])
+            ->get();
+
+        var_dump($data);
+    }
+
     public function testLimit() {
 
         $sql = DB::table('user')->limit(2, 3)->get();
@@ -55,7 +98,7 @@ class BuilderStaticTest extends TestCase
         var_dump($sql);
     }
 
-    public function testInset() {
+    public function testInsert() {
         $id = DB::table('user')->insert([
             'name' => 'Builder Static Test',
             'age' => 3
