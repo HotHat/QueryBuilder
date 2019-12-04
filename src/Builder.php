@@ -4,13 +4,15 @@
 namespace SqlBuilder;
 
 
+use Closure;
+use Exception;
 use SqlBuilder\Expr\aggregate\Avg;
 use SqlBuilder\Expr\aggregate\Count;
 use SqlBuilder\Expr\aggregate\Max;
 use SqlBuilder\Expr\DeleteExpr;
 use SqlBuilder\Expr\ExprException;
 use SqlBuilder\Expr\ForShare;
-use SqlBuilder\Expr\ForUpdate;
+use SqlBuilder\Expr\ForLock;
 use SqlBuilder\Expr\GroupBy;
 use SqlBuilder\Expr\Having;
 use SqlBuilder\Expr\HavingCondition;
@@ -35,6 +37,7 @@ use SqlBuilder\Expr\Where;
 use SqlBuilder\Expr\WhereCondition;
 use SqlBuilder\Expr\WhereGroup;
 use function SqlBuilder\Expr\tap;
+use function SqlBuilder\Expr\with;
 
 class Builder
 {
@@ -67,6 +70,18 @@ class Builder
 
     public function __construct(MysqlConnection $connection)
     {
+        $this->init();
+
+        $this->stack = [];
+        $this->isInStack = false;
+        $this->extraData = [];
+        $this->queryType = self::SELECT;
+        $this->connection = $connection;
+        $this->enableLog = false;
+        $this->queryLog = [];
+    }
+
+    private function init() {
         $this->container = [
             'table' => new Table(),
             'where' => new WhereCondition(),
@@ -75,18 +90,15 @@ class Builder
             'having' => new HavingCondition(),
             'orderBy' => new OrderBy(),
             'limit' => new Limit(),
-            'forUpdate' => new ForUpdate(),
+            'forLock' => new ForLock(),
             'updateSet' => new UpdatePair(),
             'insertValue' => new InsertValue(),
             'union' => new Union()
         ];
-        $this->stack = [];
-        $this->isInStack = false;
-        $this->extraData = [];
-        $this->queryType = self::SELECT;
-        $this->connection = $connection;
-        $this->enableLog = false;
-        $this->queryLog = [];
+    }
+
+    private function reset() {
+        $this->init();
     }
 
     public function select(...$column)
@@ -136,7 +148,7 @@ class Builder
         });
     }
 
-    public function table(...$table) {
+    public function table(...$table) : Builder {
         return tap($this, function($it) use ($table) {
             $tb = new Table();
             foreach ($table as $t) {
@@ -147,11 +159,11 @@ class Builder
         });
     }
 
-    public function from(...$table) {
+    public function from(...$table) : Builder {
         return $this->table(...$table);
     }
 
-    public function where(...$where) {
+    public function where(...$where) : Builder {
         return tap($this, function($it) use ($where) {
             if (is_callable($where[0])) {
                 $fn = $where[0];
@@ -181,7 +193,7 @@ class Builder
         });
     }
 
-    public function orWhere(...$where)
+    public function orWhere(...$where) : Builder
     {
         if (is_callable($where[0])) {
             $fn = $where[0];
@@ -214,7 +226,8 @@ class Builder
         return $this;
     }
 
-    public function having(...$where) {
+    public function having(...$where) : Builder
+    {
         $where = new Having($where[0], $where[1] ?? null, $where[2] ?? null);
 
         if ($this->isInStack) {
@@ -227,12 +240,12 @@ class Builder
     }
 
     
-    public function join($table, $leftCol, $condition, $rightCol) {
+    public function join($table, $leftCol, $condition, $rightCol) : Builder {
         $this->container['table']->addJoin(new Join($table, $leftCol, $condition, $rightCol));
         return $this;
     }
     
-    public function leftJoin($table, $leftCol, $condition, $rightCol) {
+    public function leftJoin($table, $leftCol, $condition, $rightCol) : Builder {
         $this->container['table']->addJoin(new LeftJoin($table, $leftCol, $condition, $rightCol));
         return $this;
     }
@@ -242,7 +255,7 @@ class Builder
         return $this;
     }
     
-    public function limit($offset, $row = '') {
+    public function limit($offset, $row = '')  : Builder{
         return tap($this, function ($it) use ($offset, $row) {
             $limit = new Limit();
             $limit->addItem(Value::raw($offset));
@@ -255,19 +268,19 @@ class Builder
         });
     }
 
-    public function forUpdate() {
+    public function forUpdate()  : Builder{
         return tap($this, function ($it) {
-            $it->container['forUpdate'] = new ForUpdate();
+            $it->container['forLock']->setType(ForLock::UPDATE);
         });
     }
 
-    public function forShare() {
+    public function forShare() : Builder {
         return tap($this, function ($it) {
-            $it->container['forUpdate'] = new ForShare();
+            $it->container['forLock']->setType(ForLock::SHARE);
         });
     }
 
-    public function orderBy($name, $direction = '') {
+    public function orderBy($name, $direction = '') : Builder {
         return tap($this, function ($it) use ($name, $direction){
             $orderBy = new OrderByItem($name, $direction);
             $it->container['orderBy']->addItem(Value::make($orderBy));
@@ -288,6 +301,21 @@ class Builder
 
     public function insert(array $data) {
         return $this->getQueryData(self::INSERT, $data);
+    }
+
+    public function transaction(Closure $func) {
+        $this->connection->transaction();
+
+        try {
+
+            $func();
+
+            $this->connection->commit();
+
+        } catch (Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        }
     }
 
     public function delete() {
@@ -330,24 +358,7 @@ class Builder
         return $data;
     }
 
-    private function toSelect() {
-        $expr = new SelectExpr(
-            $this->container['select'],
-            $this->container['table']->asFrom(),
-            $this->container['where'],
-            $this->container['groupBy'],
-            $this->container['having'],
-            $this->container['orderBy'],
-            $this->container['limit'],
-            $this->container['forUpdate'],
-            $this->container['union'],
 
-        );
-
-        $result = $expr->compile();
-
-        return $result;
-    }
 
     private function queryLog($sql, $bindValue, $time = 0.0) {
         if (!$this->enableLog) {
@@ -360,6 +371,27 @@ class Builder
         ];
     }
 
+    private function toSelect() {
+        $expr = new SelectExpr(
+            $this->container['select'],
+            $this->container['table']->asFrom(),
+            $this->container['where'],
+            $this->container['groupBy'],
+            $this->container['having'],
+            $this->container['orderBy'],
+            $this->container['limit'],
+            $this->container['forLock'],
+            $this->container['union'],
+
+        );
+
+        $result = $expr->compile();
+
+        $this->reset();
+
+        return $result;
+    }
+
     private function toInsertSql(array $data) {
         foreach ($data as $k => $v) {
             $this->container['insertValue']->addItem(Value::make([$k, $v]));
@@ -368,7 +400,7 @@ class Builder
         $expr = new InsertExpr($this->container['table'],
             $this->container['insertValue'],
         );
-
+        $this->init();
         return $expr->compile();
     }
 
@@ -383,12 +415,13 @@ class Builder
             $this->container['orderBy'],
             $this->container['limit'],
         );
-
+        $this->init();
         return $expr->compile();
     }
 
     private function toDeleteSql() {
         $expr = new DeleteExpr($this->container['table'], $this->container['where']);
+        $this->init();
         return $expr->compile();
     }
 }

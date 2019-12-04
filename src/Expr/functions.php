@@ -47,3 +47,11 @@ function tap($it, Closure $func = null) {
     }
     return $it;
 }
+
+function with($it, Closure $func = null) {
+    if (isset($func)) {
+        return $func($it);
+    }
+    return $it;
+}
+

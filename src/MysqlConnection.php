@@ -67,6 +67,23 @@ class MysqlConnection
         }, false);
     }
 
+    public function transaction() {
+        $start = $this->pdo->beginTransaction();
+
+        if (!$start) {
+            throw new PDOException('Transaction init failure');
+        }
+    }
+
+    public function rollBack() {
+        $this->pdo->rollBack();
+    }
+
+    public function commit() {
+
+        $this->pdo->commit();
+    }
+
     private function query(string $sql, array $params, Closure $func, $failValue) {
 
         $stmt = $this->pdo->prepare($sql);

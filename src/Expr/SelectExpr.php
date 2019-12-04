@@ -13,13 +13,13 @@ class SelectExpr
     private $having;
     private $orderBy;
     private $limit;
-    private $forUpdate;
+    private $forLock;
     private $union;
 
     public function __construct(
         Select $select, Table $from, WhereCondition $where,
         GroupBy $groupBy, HavingCondition $having, OrderBy $orderBy,
-        Limit $limit, ForUpdate $forUpdate, Union $union)
+        Limit $limit, ForLock $forLock, Union $union)
     {
 
         $this->select = $select;
@@ -29,7 +29,7 @@ class SelectExpr
         $this->having = $having;
         $this->orderBy = $orderBy;
         $this->limit = $limit;
-        $this->forUpdate = $forUpdate;
+        $this->forLock = $forLock;
         $this->union = $union;
     }
 
@@ -50,7 +50,7 @@ class SelectExpr
             $havingSql,
             $this->orderBy->compile(),
             $this->limit->compile(),
-            $this->forUpdate->compile(),
+            $this->forLock->compile(),
             $unionSql
         ));
 

@@ -75,4 +75,29 @@ class BuilderWithDbTest extends TestCase
         var_dump($data);
     }
 
+    public function testForUpdate() {
+        $data = $this->builder->table('user')->where('id', 6)->forUpdate()->get();
+        var_dump($data);
+    }
+
+    public function testTransaction() {
+        $this->builder->transaction(function () {
+            $this->builder->table('user')->insert([
+                'name' => 'transaction test',
+                'age' => 12
+            ]);
+
+            $data = $this->builder->table('user')->where('id', 4)->forUpdate()->first();
+
+            var_dump($data);
+
+            $this->builder->table('user')->where('id', 5)->update([
+                'name' => 'well done'
+            ]);
+            throw new \SqlBuilder\Expr\ExprException('Transaction Error Test!');
+
+        });
+
+    }
+
 }
