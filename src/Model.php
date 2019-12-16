@@ -39,11 +39,11 @@ class Model
             return $this->{$name}(...$arguments);
         }
         $this->builder->table($this->table);
-        if ($name == 'select') {
-            $arguments = array_map(function ($it) {
-                return sprintf('%s.%s', $this->getTable(), $it);
-            }, $arguments);
-        }
+        // if ($name == 'select') {
+        //     $arguments = array_map(function ($it) {
+        //         return sprintf('%s.%s', $this->getTable(), $it);
+        //     }, $arguments);
+        // }
         return $this->builder->{$name}(...$arguments);
     }
 
