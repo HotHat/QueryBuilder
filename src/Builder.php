@@ -439,7 +439,7 @@ class Builder
             $this->container['orderBy'],
             $this->container['limit'],
             $this->container['forLock'],
-            $this->container['union'],
+            $this->container['union']
 
         );
 
@@ -456,7 +456,7 @@ class Builder
         }
 
         $expr = new InsertExpr($this->container['table'],
-            $this->container['insertValue'],
+            $this->container['insertValue']
         );
         $this->init();
         return $expr->compile();
@@ -471,7 +471,7 @@ class Builder
             $this->container['updateSet'],
             $this->container['where'],
             $this->container['orderBy'],
-            $this->container['limit'],
+            $this->container['limit']
         );
         $this->init();
         return $expr->compile();
