@@ -60,8 +60,6 @@ class Builder
     private $connection;
     private $queryType;
     private $extraData;
-    private $enableLog;
-    private $queryLog;
 
     const SELECT = 1;
     const INSERT = 2;
@@ -77,8 +75,6 @@ class Builder
         $this->extraData = [];
         $this->queryType = self::SELECT;
         $this->connection = $connection;
-        $this->enableLog = false;
-        $this->queryLog = [];
     }
 
     private function init() {
@@ -400,15 +396,14 @@ class Builder
     }
 
     public function enableQueryLog() {
-        $this->enableLog = true;
+        $this->connection->enableQueryLog();
     }
 
     public function getQueryLog() {
-        return $this->queryLog;
+        return $this->connection->getQueryLog();
     }
 
     private function getQueryData($type, array $extra = [], $multiple = true) {
-        $timeStart = microtime(true);
         switch ($type) {
             case self::SELECT :
                 [$sql, $bindValue] = $this->toSelect();
@@ -430,22 +425,8 @@ class Builder
                 throw new ExprException("Can't find this type: {$type}");
         }
 
-        $this->queryLog($sql, $bindValue, (microtime(true) - $timeStart));
 
         return $data;
-    }
-
-
-
-    private function queryLog($sql, $bindValue, $time = 0.0) {
-        if (!$this->enableLog) {
-            return;
-        }
-        $this->queryLog[] = [
-            'query' => $sql,
-            'bindValue' => $bindValue,
-            'time' => $time
-        ];
     }
 
     private function toSelect() {

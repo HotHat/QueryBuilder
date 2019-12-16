@@ -14,6 +14,9 @@ class MysqlConnection
 
     private $rowCount;
 
+    private $enableLog;
+    private $queryLog;
+
     public function __construct($host, $port, $database, $user, $password, $charset = 'utf8')
     {
         $this->fetchMode = PDO::FETCH_ASSOC;
@@ -84,24 +87,56 @@ class MysqlConnection
         $this->pdo->commit();
     }
 
+    public function enableQueryLog() {
+        $this->enableLog = true;
+    }
+
+    public function getQueryLog() {
+        return $this->queryLog;
+    }
+
+
     private function query(string $sql, array $params, Closure $func, $failValue) {
 
-        $stmt = $this->pdo->prepare($sql);
+        $timeStart = microtime(true);
 
-        if ($stmt->execute($params)) {
-            // select statement
+        try {
+            $stmt = $this->pdo->prepare($sql);
 
-            return $func($this->pdo, $stmt);
+            if ($stmt->execute($params)) {
+                // select statement
 
-        } else {
-            $error = $stmt->errorInfo();
+                $data = $func($this->pdo, $stmt);
 
-            if ($error[0] != '00000') {
-                throw new PDOException(sprintf('Error Code: %s; Driver Code: %s; Info: %s', $error[0], $error[1], $error[2]));
+                $this->queryLog($sql, $params, (microtime(true) - $timeStart));
+
+                return $data;
+
+            } else {
+                $error = $stmt->errorInfo();
+
+                if ($error[0] != '00000') {
+                    throw new PDOException(sprintf('Error Code: %s; Driver Code: %s; Info: %s', $error[0], $error[1], $error[2]));
+                }
+
+                return $failValue;
             }
-
-            return $failValue;
+        } catch (\Exception $e) {
+            $this->queryLog($sql, $params, (microtime(true) - $timeStart));
+            throw $e;
         }
+
+    }
+
+    private function queryLog($sql, $bindValue, $time = 0.0) {
+        if (!$this->enableLog) {
+            return;
+        }
+        $this->queryLog[] = [
+            'query' => $sql,
+            'bindValue' => $bindValue,
+            'time' => $time
+        ];
     }
 
 }

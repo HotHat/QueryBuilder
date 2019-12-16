@@ -14,7 +14,8 @@
             "SqlBuilder\\": "src/"
         },
         "files": [
-            "src/Expr/functions.php"
+            "src/Expr/functions.php",
+            "src/functions.php"
         ]
     },
     "autoload-dev": {
