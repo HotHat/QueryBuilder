@@ -4,7 +4,7 @@
 namespace Tests;
 
 
-use SqlBuilder\Model;
+use QueryBuilder\Model;
 
 class UserModel extends Model
 {

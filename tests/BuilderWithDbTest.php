@@ -20,9 +20,9 @@ class BuilderWithDbTest extends TestCase
         $this->user = 'homestead';
         $this->password = 'secret';
 
-        $connection = new \SqlBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
+        $connection = new \QueryBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
 
-        $this->builder = new \SqlBuilder\Builder($connection);
+        $this->builder = new \QueryBuilder\Builder($connection);
         $this->builder->enableQueryLog();
     }
 
@@ -94,7 +94,7 @@ class BuilderWithDbTest extends TestCase
             $this->builder->table('user')->where('id', 5)->update([
                 'name' => 'well done'
             ]);
-            throw new \SqlBuilder\Expr\ExprException('Transaction Error Test!');
+            throw new \QueryBuilder\Expr\ExprException('Transaction Error Test!');
 
         });
 

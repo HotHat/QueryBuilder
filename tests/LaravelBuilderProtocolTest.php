@@ -3,7 +3,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-use SqlBuilder\Builder;
+use QueryBuilder\Builder;
 
 
 class LaravelBuilderProtocolTest extends TestCase

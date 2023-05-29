@@ -154,7 +154,7 @@ class ModelTest extends TestCase
                 'name' => 'builder static transaction well done'
             ]);
 
-            throw new \SqlBuilder\Expr\ExprException('Transaction Error Test!');
+            throw new \QueryBuilder\Expr\ExprException('Transaction Error Test!');
 
         });
 

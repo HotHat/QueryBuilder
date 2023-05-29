@@ -8,7 +8,7 @@ class UpdateBuilderTest extends TestCase
 
     public function testUpdate() {
 
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->where('id', 1)->update([
             'name' => 'hello world',
             'id' => 1234

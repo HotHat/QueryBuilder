@@ -4,11 +4,11 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SqlBuilder\Expr\Select;
-use SqlBuilder\Expr\Where;
-use SqlBuilder\Expr\OrWhere;
-use SqlBuilder\Expr\WhereItem;
-use SqlBuilder\Expr\Value;
+use QueryBuilder\Expr\Select;
+use QueryBuilder\Expr\Where;
+use QueryBuilder\Expr\OrWhere;
+use QueryBuilder\Expr\WhereItem;
+use QueryBuilder\Expr\Value;
 
 class SchemeTest extends TestCase
 {
@@ -37,7 +37,7 @@ class SchemeTest extends TestCase
     }
 
     public function testFrom() {
-        $f = new \ZiWen\SqlBuilder\scheme\From();
+        $f = new \ZiWen\QueryBuilder\scheme\From();
 
         $f->addItem('users');
         $f->addItem('orders');
@@ -86,7 +86,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \SqlBuilder\Expr\WhereCondition();
+        $g = new \QueryBuilder\Expr\WhereCondition();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -112,7 +112,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \SqlBuilder\Expr\WhereGroup();
+        $g = new \QueryBuilder\Expr\WhereGroup();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -136,7 +136,7 @@ class SchemeTest extends TestCase
         $wo2 = new OrWhere('b', 2);
         $wo3 = new OrWhere('b', '=', 3);
 
-        $g = new \SqlBuilder\Expr\OrWhereGroup();
+        $g = new \QueryBuilder\Expr\OrWhereGroup();
         $g->addWhere($w1);
         $g->addWhere($w2);
         $g->addWhere($w3);
@@ -154,12 +154,12 @@ class SchemeTest extends TestCase
 
 
     public function testLimit() {
-        $l = new \SqlBuilder\Expr\Limit();
-        $l->addItem(\SqlBuilder\Expr\Value::raw('1'));
+        $l = new \QueryBuilder\Expr\Limit();
+        $l->addItem(\QueryBuilder\Expr\Value::raw('1'));
         $expect = 'LIMIT 1';
         $this->assertEquals($expect, $l->compile());
 
-        $l->addItem(\SqlBuilder\Expr\Value::raw('3'));
+        $l->addItem(\QueryBuilder\Expr\Value::raw('3'));
         $expect = 'LIMIT 1, 3';
         $this->assertEquals($expect, $l->compile());
 
@@ -167,7 +167,7 @@ class SchemeTest extends TestCase
 
     public function testOrderBy()
     {
-        $b = new \ZiWen\SqlBuilder\scheme\OrderBy();
+        $b = new \ZiWen\QueryBuilder\scheme\OrderBy();
         $b->addItem(['id', 'DESC']);
         $expect = 'ORDER BY `id` DESC';
         $this->assertEquals($expect, $b->compile());
@@ -179,7 +179,7 @@ class SchemeTest extends TestCase
 
     public function testGroupBy()
     {
-        $g = new \SqlBuilder\Expr\GroupBy();
+        $g = new \QueryBuilder\Expr\GroupBy();
         $g->addItem(Value::make('first_name'));
         $g->addItem(Value::raw('status'));
 
@@ -188,7 +188,7 @@ class SchemeTest extends TestCase
     }
 
     public function testUpdate() {
-        $u = new \SqlBuilder\Expr\Update();
+        $u = new \QueryBuilder\Expr\Update();
         $u->addItem(Value::make('users'));
 
         $sql = $u->compile();
@@ -197,7 +197,7 @@ class SchemeTest extends TestCase
     }
 
     public function testSet() {
-        $u = new \SqlBuilder\Expr\UpdatePair();
+        $u = new \QueryBuilder\Expr\UpdatePair();
         $u->addItem(Value::make(['name', 'name']));
         $u->addItem(Value::make(['id', 1]));
 
@@ -208,7 +208,7 @@ class SchemeTest extends TestCase
     
     
     public function testJoin() {
-        $join = new \SqlBuilder\Expr\Join('orders', 'user.id',  '=', 'orders.user_id');
+        $join = new \QueryBuilder\Expr\Join('orders', 'user.id',  '=', 'orders.user_id');
         
         echo $join->compile();
         
@@ -217,7 +217,7 @@ class SchemeTest extends TestCase
     }
     
     public function testLeftJoin() {
-        $join = new \SqlBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
+        $join = new \QueryBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
     
         echo $join->compile();
     
@@ -226,7 +226,7 @@ class SchemeTest extends TestCase
     }
     
     public function testRightJion() {
-        $join = new \SqlBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
+        $join = new \QueryBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
     
         echo $join->compile();
     
@@ -237,12 +237,12 @@ class SchemeTest extends TestCase
     
     public function testTaleWithJoin() {
     
-        $join = new \SqlBuilder\Expr\Join('orders', 'user.id', '=', 'orders.user_id');
-        $leftJoin = new \SqlBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
-        $rightJoin = new \SqlBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
+        $join = new \QueryBuilder\Expr\Join('orders', 'user.id', '=', 'orders.user_id');
+        $leftJoin = new \QueryBuilder\Expr\LeftJoin('orders', 'user.id', '=', 'orders.user_id');
+        $rightJoin = new \QueryBuilder\Expr\RightJoin('orders', 'user.id', '=', 'orders.user_id');
         
         
-        $table = (new \SqlBuilder\Expr\Table())->asFrom();
+        $table = (new \QueryBuilder\Expr\Table())->asFrom();
         $table->addTable('users');
         
         $table->addJoin($join);

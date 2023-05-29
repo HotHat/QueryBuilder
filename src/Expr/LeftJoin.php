@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\Expr;
+namespace QueryBuilder\Expr;
 
 
 class LeftJoin extends Join

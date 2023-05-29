@@ -1,5 +1,5 @@
 {
-    "name": "hothat/sql-builder",
+    "name": "HotHat/QueryBuilder",
     "authors": [
         {
             "name": "lyh",
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SqlBuilder\\": "src/"
+            "QueryBuilder\\": "src/"
         },
         "files": [
             "src/Expr/functions.php",

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SqlBuilder;
+namespace QueryBuilder;
 
 function getDefaultConnection() {
     $host = '192.168.68.8';

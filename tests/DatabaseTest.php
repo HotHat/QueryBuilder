@@ -28,11 +28,11 @@ class DatabaseTest extends TestCase
      */
     private $user;
     /**
-     * @var \SqlBuilder\MysqlConnection
+     * @var \QueryBuilder\MysqlConnection
      */
     private $db;
     /**
-     * @var \SqlBuilder\Builder
+     * @var \QueryBuilder\Builder
      */
     private $builder;
 
@@ -45,8 +45,8 @@ class DatabaseTest extends TestCase
        $this->user = 'homestead';
        $this->passward = 'secret';
 
-      $this->db = new \SqlBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->passward);
-      $this->builder = new \SqlBuilder\Builder();
+      $this->db = new \QueryBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->passward);
+      $this->builder = new \QueryBuilder\Builder();
 
     }
 
@@ -110,9 +110,9 @@ class DatabaseTest extends TestCase
     }
 
     public function testUnion() {
-        $builder1 = new \SqlBuilder\Builder();
-        $builder2 = new \SqlBuilder\Builder();
-        $builder3 = new \SqlBuilder\Builder();
+        $builder1 = new \QueryBuilder\Builder();
+        $builder2 = new \QueryBuilder\Builder();
+        $builder3 = new \QueryBuilder\Builder();
 
         $builder1->table('user')->where('id', 1);
         $builder3->table('user')->where('id', 4);

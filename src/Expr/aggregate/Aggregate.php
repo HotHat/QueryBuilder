@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\Expr\aggregate;
+namespace QueryBuilder\Expr\aggregate;
 
 
-use SqlBuilder\Expr\CompileToPair;
+use QueryBuilder\Expr\CompileToPair;
 
 abstract class Aggregate implements CompileToPair
 {

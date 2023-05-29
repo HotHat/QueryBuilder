@@ -3,7 +3,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-use SqlBuilder\BuilderStatic as DB;
+use QueryBuilder\BuilderStatic as DB;
 
 class BuilderStaticTest extends TestCase
 {
@@ -21,7 +21,7 @@ class BuilderStaticTest extends TestCase
         $this->user = 'homestead';
         $this->password = 'secret';
 
-        $connection = new \SqlBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
+        $connection = new \QueryBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
 
         DB::setConnection($connection);
         DB::enableQueryLog();
@@ -141,7 +141,7 @@ class BuilderStaticTest extends TestCase
                 'name' => 'builder static transaction well done'
             ]);
 
-            throw new \SqlBuilder\Expr\ExprException('Transaction Error Test!');
+            throw new \QueryBuilder\Expr\ExprException('Transaction Error Test!');
 
         });
 

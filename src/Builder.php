@@ -1,43 +1,43 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder;
+namespace QueryBuilder;
 
 
 use Closure;
 use Exception;
-use SqlBuilder\Expr\aggregate\Avg;
-use SqlBuilder\Expr\aggregate\Count;
-use SqlBuilder\Expr\aggregate\Max;
-use SqlBuilder\Expr\DeleteExpr;
-use SqlBuilder\Expr\ExprException;
-use SqlBuilder\Expr\ForShare;
-use SqlBuilder\Expr\ForLock;
-use SqlBuilder\Expr\GroupBy;
-use SqlBuilder\Expr\Having;
-use SqlBuilder\Expr\HavingCondition;
-use SqlBuilder\Expr\InsertExpr;
-use SqlBuilder\Expr\InsertValue;
-use SqlBuilder\Expr\Join;
-use SqlBuilder\Expr\LeftJoin;
-use SqlBuilder\Expr\Limit;
-use SqlBuilder\Expr\OrderBy;
-use SqlBuilder\Expr\OrderByItem;
-use SqlBuilder\Expr\OrWhere;
-use SqlBuilder\Expr\OrWhereGroup;
-use SqlBuilder\Expr\RightJoin;
-use SqlBuilder\Expr\Select;
-use SqlBuilder\Expr\SelectExpr;
-use SqlBuilder\Expr\Union;
-use SqlBuilder\Expr\UpdatePair;
-use SqlBuilder\Expr\Table;
-use SqlBuilder\Expr\UpdateExpr;
-use SqlBuilder\Expr\Value;
-use SqlBuilder\Expr\Where;
-use SqlBuilder\Expr\WhereCondition;
-use SqlBuilder\Expr\WhereGroup;
-use function SqlBuilder\Expr\tap;
-use function SqlBuilder\Expr\with;
+use QueryBuilder\Expr\Aggregate\Avg;
+use QueryBuilder\Expr\Aggregate\Count;
+use QueryBuilder\Expr\Aggregate\Max;
+use QueryBuilder\Expr\DeleteExpr;
+use QueryBuilder\Expr\ExprException;
+use QueryBuilder\Expr\ForShare;
+use QueryBuilder\Expr\ForLock;
+use QueryBuilder\Expr\GroupBy;
+use QueryBuilder\Expr\Having;
+use QueryBuilder\Expr\HavingCondition;
+use QueryBuilder\Expr\InsertExpr;
+use QueryBuilder\Expr\InsertValue;
+use QueryBuilder\Expr\Join;
+use QueryBuilder\Expr\LeftJoin;
+use QueryBuilder\Expr\Limit;
+use QueryBuilder\Expr\OrderBy;
+use QueryBuilder\Expr\OrderByItem;
+use QueryBuilder\Expr\OrWhere;
+use QueryBuilder\Expr\OrWhereGroup;
+use QueryBuilder\Expr\RightJoin;
+use QueryBuilder\Expr\Select;
+use QueryBuilder\Expr\SelectExpr;
+use QueryBuilder\Expr\Union;
+use QueryBuilder\Expr\UpdatePair;
+use QueryBuilder\Expr\Table;
+use QueryBuilder\Expr\UpdateExpr;
+use QueryBuilder\Expr\Value;
+use QueryBuilder\Expr\Where;
+use QueryBuilder\Expr\WhereCondition;
+use QueryBuilder\Expr\WhereGroup;
+use function QueryBuilder\Expr\tap;
+use function QueryBuilder\Expr\with;
 
 class Builder
 {

@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\Expr;
+namespace QueryBuilder\Expr;
 
 
-use SqlBuilder\Expr\aggregate\Aggregate;
+use QueryBuilder\Expr\aggregate\Aggregate;
 
 class Select extends Column
 {

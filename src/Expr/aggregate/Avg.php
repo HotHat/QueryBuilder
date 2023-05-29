@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 
-namespace SqlBuilder\Expr\aggregate;
+namespace QueryBuilder\Expr\aggregate;
 
 
-use function SqlBuilder\Expr\wrapValue;
+use function QueryBuilder\Expr\wrapValue;
 
 class Avg extends Aggregate
 {

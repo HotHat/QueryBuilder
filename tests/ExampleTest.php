@@ -3,9 +3,9 @@
 
 
 use PHPUnit\Framework\TestCase;
-use SqlBuilder\SelectCompile;
-use SqlBuilder\Where;
-use SqlBuilder\Builder;
+use QueryBuilder\SelectCompile;
+use QueryBuilder\Where;
+use QueryBuilder\Builder;
 
 class ExampleTest extends  TestCase
 {
@@ -21,8 +21,8 @@ class ExampleTest extends  TestCase
             ->from('users')
             ->where('id=9')
             ->orwhere('id=10')
-            ->where('name', '陈委平1')
-            ->where('mobile', '=', 18106023801)
+            ->where('name', 'hao')
+            ->where('mobile', '=', 19106023801)
             ->where(function ($query) {
                     $query->where('id=11');
             })

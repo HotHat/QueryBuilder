@@ -8,7 +8,7 @@ class BuilderTest extends TestCase
 
     private $builder;
     public function setUp() : void {
-        $this->builder = new \SqlBuilder\Builder();
+        $this->builder = new \QueryBuilder\Builder();
     }
 
     public function testGet() {
@@ -20,7 +20,7 @@ class BuilderTest extends TestCase
 
 
     public function testSelect() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')->where('id', 1)->get();
 
         var_dump($sql);
@@ -43,7 +43,7 @@ class BuilderTest extends TestCase
     }
 
     public function testLimit() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')->where('id', 1)->limit(1)->get();
         var_dump($sql);
 
@@ -52,7 +52,7 @@ class BuilderTest extends TestCase
     }
 
     public function testForUpdate() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')
             ->forUpdate()
             ->where('id', 1)->get();
@@ -60,7 +60,7 @@ class BuilderTest extends TestCase
         var_dump($sql);
     }
     public function testForShare() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')
             ->forShare()
             ->where('id', 1)->get();
@@ -69,7 +69,7 @@ class BuilderTest extends TestCase
     }
     
     public function testWhere() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')
             ->where('id', 1)->get();
         
@@ -77,7 +77,7 @@ class BuilderTest extends TestCase
     }
     
     public function testHaving() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')
             ->having('id', 1)->get();
 
@@ -86,7 +86,7 @@ class BuilderTest extends TestCase
     
     
     public function testTableJoin() {
-        $builder = new \SqlBuilder\Builder();
+        $builder = new \QueryBuilder\Builder();
         $sql = $builder->table('users')->select('id', 'name')
             ->join('orders', 'users.id', '=', 'orders.user_id')->get();
         

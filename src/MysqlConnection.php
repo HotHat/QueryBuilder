@@ -1,5 +1,5 @@
 <?php
-namespace SqlBuilder;
+namespace QueryBuilder;
 
 use Closure;
 use PDO;
