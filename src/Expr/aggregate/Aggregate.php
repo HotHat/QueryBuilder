@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
 
-namespace QueryBuilder\Expr\aggregate;
+namespace QueryBuilder\Expr\Aggregate;
 
 
-use QueryBuilder\Expr\CompileToPair;
+use QueryBuilder\Expr\CompileToString;
 
-abstract class Aggregate implements CompileToPair
+abstract class Aggregate implements CompileToString
 {
     protected $column;
 

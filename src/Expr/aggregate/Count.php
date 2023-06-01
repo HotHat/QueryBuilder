@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace QueryBuilder\Expr\aggregate;
+namespace QueryBuilder\Expr\Aggregate;
 
 
 use function QueryBuilder\Expr\wrapValue;
