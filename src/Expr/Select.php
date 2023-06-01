@@ -4,7 +4,7 @@
 namespace QueryBuilder\Expr;
 
 
-use QueryBuilder\Expr\aggregate\Aggregate;
+use QueryBuilder\Expr\Aggregate\Aggregate;
 
 class Select extends Column
 {
