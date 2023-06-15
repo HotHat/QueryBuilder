@@ -2,4 +2,4 @@
 vendor/
 .gitignore.swo
 .gitignore.swp
-
+.phpunit.result.cache

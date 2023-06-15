@@ -121,15 +121,26 @@ class Builder
     }
 
     public function count() {
-        return tap($this, function ($it) {
-            $it->container['select']->setAggregate(new Count());
-        });
+        // tap($this, function ($it) {
+        $this->container['select']->setAggregate(new Count());
+        // });
+        $data = $this->getQueryData(self::SELECT, [], false);
+
+        // recover select
+        $this->container['select']->setAggregate(null);
+
+        return $data['count'];
     }
 
     public function max($column) {
-        return tap($this, function ($it) use ($column) {
-            $it->container['select']->setAggregate(new Max($column));
-        });
+        $this->container['select']->setAggregate(new Max($column));
+
+        $data = $this->getQueryData(self::SELECT, [], false);
+
+        // recover select
+        $this->container['select']->setAggregate(null);
+
+        return $data['max'];
     }
 
     public function avg($column) {
@@ -361,11 +372,15 @@ class Builder
     }
 
     public function get() {
-        return $this->getQueryData(self::SELECT, [], true);
+        $data = $this->getQueryData(self::SELECT, [], true);
+        $this->reset();
+        return $data;
     }
 
     public function first() {
-        return $this->getQueryData(self::SELECT, [], false);
+        $data = $this->getQueryData(self::SELECT, [], false);
+        $this->reset();
+        return $data;
     }
 
     public function update(array $data) {
@@ -445,7 +460,7 @@ class Builder
 
         $result = $expr->compile();
 
-        $this->reset();
+        // $this->reset();
 
         return $result;
     }

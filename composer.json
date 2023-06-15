@@ -25,5 +25,8 @@
         "files": [
             "src/Expr/functions.php"
         ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.2"
     }
 }

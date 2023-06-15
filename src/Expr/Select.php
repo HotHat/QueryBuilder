@@ -21,7 +21,7 @@ class Select extends Column
         parent::__construct();
     }
 
-    public function setAggregate(Aggregate $aggregate) {
+    public function setAggregate(?Aggregate $aggregate) {
         $this->aggregate = $aggregate;
     }
 

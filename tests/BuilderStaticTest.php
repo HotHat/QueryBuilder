@@ -15,11 +15,11 @@ class BuilderStaticTest extends TestCase
     private $password;
 
     public function setUp() : void {
-        $this->host = '192.168.68.8';
+        $this->host = 'mysql';
         $this->port = 3306;
-        $this->dbname = 'ziwen';
-        $this->user = 'homestead';
-        $this->password = 'secret';
+        $this->dbname = 'xapp';
+        $this->user = 'root';
+        $this->password = '123456';
 
         $connection = new \QueryBuilder\MysqlConnection($this->host, $this->port, $this->dbname, $this->user, $this->password);
 
@@ -46,6 +46,18 @@ class BuilderStaticTest extends TestCase
         var_dump($sql);
 
     }
+
+    public function testCount() {
+        $count = DB::table('movie')
+            ->where('id', 1)
+            ->count();
+
+        $movie = DB::table('movie')->get();
+
+        var_dump($count);
+        var_dump($movie);
+    }
+
     public function testWhere() {
 
        $data = DB::table('user')->where('id', 1)->get();
